@@ -24,7 +24,6 @@
  } list_t; */
 
 
-
  /* list operations */
 list_t *list_create(int (*compare)(const void *, const void *),
     void (*destructor)(void *)) {
@@ -40,9 +39,10 @@ list_t *list_create(int (*compare)(const void *, const void *),
     return new_list;
 }
 
-void list_destroy(list_t *list) {
-    if (list == NULL)
-        return;
+status list_destroy(list_t *list) {
+    // if (list == NULL)
+        // return error;
+    ASSERT(list != NULL, error);
     list_node_t *temp = list->head;
     list_node_t *next = NULL;
     /**
@@ -65,18 +65,26 @@ void list_destroy(list_t *list) {
         }
     }
     free(list);
+    return true;
 }
 
 status list_insert(list_t *list, size_t index, void *data) {
     /* if the list is NULL, return error */
-    if (list == NULL)
-        return error;
+    // if (list == NULL)
+        // return error;
+    ASSERT(list != NULL, error);
     list_node_t *new_node = (list_node_t *)malloc(sizeof(list_node_t));
     /* check if malloc failed */
-    if (new_node == NULL)
-        return failed;
+    // if (new_node == NULL)
+        // return failed;
+    ASSERT(new_node != NULL, failed);
+
     new_node->data = data;
     new_node->next = NULL;
+
+    /* check if index out of range */
+    ASSERT(index <= list->size, error);
+
     /* insert to the head */
     if (index == 0) {
         new_node->next = list->head;
@@ -89,10 +97,6 @@ status list_insert(list_t *list, size_t index, void *data) {
         list->tail->next = new_node;
         list->tail = new_node;
         // no need to check if list->size == 0
-    }
-    /* index out of range */
-    else if (index > list->size) {
-        return error;
     }
     /* insert to the middle */
     else {
@@ -107,10 +111,17 @@ status list_insert(list_t *list, size_t index, void *data) {
 }
 
 status list_remove(list_t *list, size_t index, void **data) {
-    if (list == NULL || list->size == 0)
-        return error;
+    /* if the list is NULL or empty, return error */
+    // if (list == NULL || list->size == 0)
+        // return error;
+    ASSERT(list != NULL && list->size != 0, error);
+
+    /* check if index out of range */
+    ASSERT(index < list->size, error);
+
     list_node_t *temp = list->head;
     list_node_t *prev = NULL;
+
     /* remove the head */
     if (index == 0) {
         list->head = temp->next;
@@ -127,10 +138,6 @@ status list_remove(list_t *list, size_t index, void **data) {
         free(temp->next);
         temp->next = NULL;
         list->tail = temp;
-    }
-    /* index out of range */
-    else if (index >= list->size) {
-        return error;
     }
     /* remove the middle */
     else {
@@ -156,14 +163,16 @@ status list_push_back(list_t *list, void *data) {
 
 /* get the status of list */
 size_t list_size(list_t *list) {
-    if (list == NULL)
+    if (list == NULL) {
+        fprintf(stderr, "[%s]:%s:%d is failed! error code: %d\r\n",
+            __FILE__, __FUNCTION__, __LINE__, error);
         return 0;
+    }
     return list->size;
 }
 
 status list_empty(list_t *list) {
-    if (list == NULL)
-        return error;
+    ASSERT(list != NULL, error);
     return list->size == 0 ? true : false;
 }
 
