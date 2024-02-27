@@ -14,10 +14,12 @@
 
 /* base64 data */
 const byte *base64_default_table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+static byte base64_default_reverse_table[128] = { 0 };
 
 /* base64 encoder */
 typedef struct base64_encoder {
     const byte *b64_table;
+    byte *reverse_table;
     int output_len;
 } base64_encoder;
 
