@@ -10,7 +10,7 @@
 #define _LIST_H_
 
  /* pre-initialization of ADT */
-#include "adt_pre_init.h"
+#include "adt/adt_pre_init.h"
 
 /* list node structure */
 typedef struct list_node_s {

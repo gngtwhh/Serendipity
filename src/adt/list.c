@@ -3,10 +3,10 @@
  * @brief List implementation
  * @author WAHAHA
  * @category data-structure
- * @date 2021-03-06
+ * @date 2024
  */
 
-#include "adt/list.h"
+#include <adt/list.h>
 #include <stdlib.h>
 
 
