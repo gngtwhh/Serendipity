@@ -6,7 +6,7 @@
  * @date 2021-03-06
  */
 
-#include <adt/list.h>
+#include "adt/list.h"
 #include <stdlib.h>
 
 
@@ -162,6 +162,9 @@ status list_push_back(list_t *list, void *data) {
 }
 
 /* get the status of list */
+
+/**
+ * this function has rewritten as a macro in list.h 
 size_t list_size(list_t *list) {
     if (list == NULL) {
         fprintf(stderr, "[%s]:%s:%d is failed! error code: %d\r\n",
@@ -170,24 +173,35 @@ size_t list_size(list_t *list) {
     }
     return list->size;
 }
+*/
 
+/**
+ * this function has rewritten as a macro in list.h
 status list_empty(list_t *list) {
     ASSERT(list != NULL, error);
     return list->size == 0 ? true : false;
 }
+*/
 
 /* get the data of list */
+
+/**
+ * this function has rewritten as a macro in list.h
 void *list_front(list_t *list) {
     if (list == NULL || list->size == 0)
         return NULL;
     return list->head->data;
 }
+ */
 
-void *list_back(list_t *list) {
-    if (list == NULL || list->size == 0)
-        return NULL;
-    return list->tail->data;
-}
+ /**
+  * this function has rewritten as a macro in list.h
+ void *list_back(list_t *list) {
+     if (list == NULL || list->size == 0)
+         return NULL;
+     return list->tail->data;
+ }
+  */
 
 void *list_get(list_t *list, size_t index) {
     if (list == NULL || list->size == 0 || index >= list->size)
