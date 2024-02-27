@@ -6,8 +6,8 @@
  * @date 2024
  */
 
-#ifndef ENCODE_PRE_INIT_H
-#define ENCODE_PRE_INIT_H
+#ifndef _ENCODE_PRE_INIT_H_
+#define _ENCODE_PRE_INIT_H_
 
 #include <stdio.h>
 
@@ -39,6 +39,11 @@ if(!(expr)) {                                                   \
         __FILE__,__FUNCTION__,__LINE__,code);                   \
     return code;                                                \
 }
+#endif
+
+#ifndef container_of
+#define container_of(ptr, type, member) \
+    ((type *)((char *)(ptr) - (unsigned long)(&((type *)0)->member)))
 #endif
 
 #endif
