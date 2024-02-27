@@ -7,14 +7,13 @@ int main() {
     list_t *list = list_create(NULL, NULL);
     for (int i = 0;i < 10;++i) {
         int *data = (int *)malloc(sizeof(int));
-        *data = i;
+        *data = i*2;
         list_push_back(list, data);
     }
 
-    list_node_t *cur = list->head;
-    while (cur != NULL) {
+    list_node_t *cur;
+    list_for_each(list, cur) {
         printf("%d ", *(int *)cur->data);
-        cur = cur->next;
     }
     list_destroy(list);
 
