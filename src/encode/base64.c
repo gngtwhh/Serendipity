@@ -81,9 +81,14 @@ status base64_encode(base64_encoder *encoder, const byte *input, int in_len,
     if (in_len % 3 != 0) {
         pad_len = 3 - in_len % 3;
     }
-    *out_len = in_len / 3 * 4 + pad_len;
-    encoder->output_len = *out_len;
-    output[*out_len] = '\0';
+    if (out_len != NULL) {
+        *out_len = in_len / 3 * 4 + pad_len;
+        encoder->output_len = *out_len;
+    } else {
+        encoder->output_len = in_len / 3 * 4 + pad_len;
+    }
+
+    output[encoder->output_len] = '\0';
 
     const byte *table = encoder->b64_table;
     int i, j;
@@ -131,9 +136,13 @@ status base64_decode(base64_encoder *encoder, const byte *input, int in_len,
             pad_len++;
         }
     }
-    *out_len = in_len / 4 * 3 - pad_len;
-    encoder->output_len = *out_len;
-    output[*out_len] = '\0';
+    if (out_len != NULL) {
+        *out_len = in_len / 4 * 3 - pad_len;
+        encoder->output_len = *out_len;
+    }else{
+        encoder->output_len = in_len / 4 * 3 - pad_len;
+    }
+    output[encoder->output_len] = '\0';
 
     const byte *re_table = encoder->reverse_table;
     int i, j;
