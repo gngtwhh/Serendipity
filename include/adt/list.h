@@ -32,7 +32,7 @@ typedef struct list_s {
 #define list_empty(list) ((list)->size == 0)
 #define list_front(list) ((list)->head->data)
 #define list_back(list) ((list)->tail->data)
-#define list_for_each(list, cur)                              \ 
+#define list_for_each(list, cur)                              \
     for (cur = (list)->head; cur != NULL; cur = cur->next)    
 
 
