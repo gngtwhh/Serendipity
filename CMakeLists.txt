@@ -8,4 +8,4 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_subdirectory(test/Data-Structure/list_test)
-add_subdirectory(test/encoding/base64)
+add_subdirectory(test/Encoding/base64)

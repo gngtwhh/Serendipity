@@ -13,8 +13,8 @@
 #include "encode/encode_pre_init.h"
 
 /* base64 data */
-const byte *base64_default_table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-static byte base64_default_reverse_table[128] = { 0 };
+static const byte *base64_default_table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+static byte base64_global_reverse_table[128] = { 0 };
 
 /* base64 encoder */
 typedef struct base64_encoder {
@@ -27,9 +27,11 @@ typedef struct base64_encoder {
 base64_encoder *new_base64(const byte *b64_table);
 status free_base64(base64_encoder *encoder);
 
-/* base64 operations */
+/* base64 table operations */
 status generate_reverse_table(const byte *b64_table, byte *reverse_table);
 status base64_change_table(base64_encoder *encoder, const byte *b64_table);
+
+/* base64 operations */
 status base64_reset(base64_encoder *encoder);
 status base64_encode(base64_encoder *encoder, const byte *input, int in_len,
     byte *output, int *out_len);

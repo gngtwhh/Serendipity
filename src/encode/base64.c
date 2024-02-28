@@ -29,12 +29,17 @@ base64_encoder *new_base64(const byte *b64_table) {
         encoder->b64_table = base64_default_table;
     else
         encoder->b64_table = b64_table;
-    encoder->reverse_table = base64_default_reverse_table;
+
+    /* set the reverse_table */
+    encoder->reverse_table = (byte *)malloc(sizeof(byte) * 128);
+    generate_reverse_table(encoder->b64_table, encoder->reverse_table);
+
     return encoder;
 }
 
 status free_base64(base64_encoder *encoder) {
     ASSERT(encoder != NULL, error);
+    free(encoder->reverse_table);
     free(encoder);
     return true;
 }
@@ -59,6 +64,7 @@ status base64_reset(base64_encoder *encoder) {
     ASSERT(encoder != NULL, error);
     encoder->output_len = 0;
     encoder->b64_table = base64_default_table;
+    generate_reverse_table(base64_default_table, encoder->reverse_table);
     return true;
 }
 
@@ -76,6 +82,7 @@ status base64_encode(base64_encoder *encoder, const byte *input, int in_len,
         pad_len = 3 - in_len % 3;
     }
     *out_len = in_len / 3 * 4 + pad_len;
+    encoder->output_len = *out_len;
     output[*out_len] = '\0';
 
     const byte *table = encoder->b64_table;
@@ -125,6 +132,7 @@ status base64_decode(base64_encoder *encoder, const byte *input, int in_len,
         }
     }
     *out_len = in_len / 4 * 3 - pad_len;
+    encoder->output_len = *out_len;
     output[*out_len] = '\0';
 
     const byte *re_table = encoder->reverse_table;
