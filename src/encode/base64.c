@@ -8,6 +8,7 @@
 
 #include <encode/base64.h>
 #include <stdlib.h>
+#include <string.h>
 
  /**
  typedef struct base64_encoder {
@@ -26,12 +27,11 @@ base64_encoder *new_base64(const byte *b64_table) {
 
     /* set the b64_table */
     if (b64_table == NULL)
-        encoder->b64_table = base64_default_table;
+        memcpy(encoder->b64_table, base64_default_table, 64);
     else
-        encoder->b64_table = b64_table;
+        memcpy(encoder->b64_table, b64_table, 64);
 
     /* set the reverse_table */
-    encoder->reverse_table = (byte *)malloc(sizeof(byte) * 128);
     generate_reverse_table(encoder->b64_table, encoder->reverse_table);
 
     return encoder;
@@ -39,7 +39,6 @@ base64_encoder *new_base64(const byte *b64_table) {
 
 status free_base64(base64_encoder *encoder) {
     ASSERT(encoder != NULL, error);
-    free(encoder->reverse_table);
     free(encoder);
     return true;
 }
@@ -55,7 +54,8 @@ status generate_reverse_table(const byte *b64_table, byte *reverse_table) {
 
 status base64_change_table(base64_encoder *encoder, const byte *b64_table) {
     ASSERT(encoder != NULL, error);
-    encoder->b64_table = b64_table;
+    ASSERT(b64_table != NULL, error);
+    memcpy(encoder->b64_table, b64_table, 64);
     generate_reverse_table(b64_table, encoder->reverse_table);
     return true;
 }
@@ -63,7 +63,7 @@ status base64_change_table(base64_encoder *encoder, const byte *b64_table) {
 status base64_reset(base64_encoder *encoder) {
     ASSERT(encoder != NULL, error);
     encoder->output_len = 0;
-    encoder->b64_table = base64_default_table;
+    memcpy(encoder->b64_table, base64_default_table, 64);
     generate_reverse_table(base64_default_table, encoder->reverse_table);
     return true;
 }
@@ -139,7 +139,7 @@ status base64_decode(base64_encoder *encoder, const byte *input, int in_len,
     if (out_len != NULL) {
         *out_len = in_len / 4 * 3 - pad_len;
         encoder->output_len = *out_len;
-    }else{
+    } else {
         encoder->output_len = in_len / 4 * 3 - pad_len;
     }
     output[encoder->output_len] = '\0';

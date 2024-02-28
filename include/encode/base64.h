@@ -13,13 +13,16 @@
 #include "encode/encode_pre_init.h"
 
 /* base64 data */
-static const byte *base64_default_table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-static byte base64_global_reverse_table[128] = { 0 };
+static byte *base64_default_table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 /* base64 encoder */
 typedef struct base64_encoder {
-    const byte *b64_table;
-    byte *reverse_table;
+    byte b64_table[64];
+    /**
+     * The characters in b64_table may not be ASCII characters,
+     * so we need to use 256
+     */
+    byte reverse_table[256];
     int output_len;
 } base64_encoder;
 
