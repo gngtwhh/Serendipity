@@ -46,6 +46,12 @@ status free_base64(base64_encoder *encoder) {
 
 /* base64 operations */
 status generate_reverse_table(const byte *b64_table, byte *reverse_table) {
+    /**
+     * Fill with 0xff, so if 0xff is accessed later,
+     * it means that this character is not in the base64 table,
+     * used for error detection
+     */
+    memset(reverse_table, 0xff, 256 * sizeof(byte));
     for (int i = 0; i < 64; i++) {
         reverse_table[b64_table[i]] = i;
     }
@@ -126,7 +132,30 @@ status base64_decode(base64_encoder *encoder, const byte *input, int in_len,
     ASSERT(input != NULL, error);
     ASSERT(in_len > 0, error);
     ASSERT(output != NULL, error);
-    // ASSERT(out_len != NULL, error);
+
+    /* check that if the input is valid */
+    if (in_len & 0x03) { // in_len % 4 != 0
+        printf("base64_decode error: the length of input is not a multiple of 4\r\n");
+        output[0] = '\0';
+        return false;
+    }
+    status valid = true;
+    for (int i = 0; i < in_len; i++) {
+        if (encoder->reverse_table[input[i]] == 0xff) {
+            valid = false;
+            break;
+        }
+        if (input[i] == '=' && i < in_len - 2) {
+            valid = false;
+            break;
+        }
+    }
+    if (!valid) {
+        printf("base64_decode error: the input is not a valid base64 string\r\n");
+        output[0] = '\0';
+        return false;
+    }
+
 
     /* calculate the length of output */
     int pad_len = 0;

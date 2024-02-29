@@ -35,7 +35,7 @@ typedef int status;
 #ifndef ASSERT
 #define ASSERT(expr,code)                                       \
 if(!(expr)) {                                                   \
-    fprintf(stderr, "[%s]:%s:%d is failed! error code: %d\r\n", \
+    printf("[%s]:%s:%d is failed! error code: %d\r\n", \
         __FILE__,__FUNCTION__,__LINE__,code);                   \
     return code;                                                \
 }
