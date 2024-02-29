@@ -5,7 +5,7 @@
 #include <string.h>
 
 int main() {
-    base64_encoder *b64 = nsw_base64(NULL);
+    base64_encoder *b64 = new_base64(NULL);
     byte str[] = "Hello World!";
     byte enc[20] = { 0 };
     int res_len;
