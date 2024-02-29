@@ -6,11 +6,11 @@
  * @date 2024
  */
 
-#ifndef _BASE64_H_
-#define _BASE64_H_
+#ifndef _ENCODE_BASE64_H_
+#define _ENCODE_BASE64_H_
 
- /* pre-initialization of encode */
-#include "encode/encode_pre_init.h"
+/* pre-initialization of encode */
+#include <encode/encode_pre_init.h>
 
 /* base64 data */
 static byte *base64_default_table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -41,4 +41,4 @@ status base64_encode(base64_encoder *encoder, const byte *input, int in_len,
 status base64_decode(base64_encoder *encoder, const byte *input, int in_len,
     byte *output, int *out_len);
 
-#endif
+#endif // _ENCODE_BASE64_H_
