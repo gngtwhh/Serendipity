@@ -41,9 +41,9 @@ if(!(expr)) {                                                   \
 }
 #endif
 
-#ifndef container_of
-#define container_of(ptr, type, member) \
-    ((type *)((char *)(ptr) - (unsigned long)(&((type *)0)->member)))
-#endif
+// #ifndef container_of
+// #define container_of(ptr, type, member) \
+//     ((type *)((char *)(ptr) - (unsigned long)(&((type *)0)->member)))
+// #endif
 
 #endif
