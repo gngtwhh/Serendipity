@@ -18,6 +18,7 @@
 typedef struct tea_encipher {
     uint32_t delta;
     int rounds; // not available for XXTEA
+    int n; // only available for XXTEA
     uint32_t key[4];
 } tea_encipher;
 
