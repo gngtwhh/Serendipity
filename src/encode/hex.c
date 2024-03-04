@@ -1,19 +1,28 @@
-/**
- * @file hex.c
- * @brief hex transform implementation
- * @author WAHAHA
- * @category encode-algorithm
- * @date 2024
+/*
+ * @file: hex.c
+ * @description: hex transform implementation
+ * @author: WAHAHA
+ * @Date: 2024-02-29 13:06:25
+ * @LastEditTime: 2024-03-04 12:29:16
+ * @FilePath: \Serendipity\src\encode\hex.c
+ * @category: encode-algorithm
  */
-
 
 #include <encode/hex.h>
 #include <stdio.h>
 #include <string.h>
 
- /* hex transform */
+ /*
+  * @Funticon name: hex_to_bytes
+  * @description: transform hex string to bytes
+  * @Author: WAHAHA
+  * @Date: 2024-03-04 12:25:50
+  * @Note: None
+  * @return {status}
+  */
 status hex_to_bytes(const char *hex, size_t in_len,
-    byte *bytes, size_t *out_len) {
+    byte *bytes, size_t *out_len)
+{
     ASSERT(hex != NULL && bytes != NULL && out_len != NULL, error);
     ASSERT(in_len % 2 == 0, error);
 
@@ -38,8 +47,17 @@ status hex_to_bytes(const char *hex, size_t in_len,
     return true;
 }
 
+/*
+ * @Funticon name: bytes_to_hex
+ * @description: transform bytes to hex string
+ * @Author: WAHAHA
+ * @Date: 2024-03-04 12:28:53
+ * @Note: None
+ * @return {status}
+ */
 status bytes_to_hex(const byte *bytes, size_t in_len,
-    char *hex, size_t *out_len) {
+    char *hex, size_t *out_len)
+{
     ASSERT(bytes != NULL && hex != NULL && out_len != NULL, error);
     ASSERT(in_len > 0, error);
 

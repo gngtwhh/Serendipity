@@ -1,9 +1,11 @@
-/**
- * @file base64.c
- * @brief base64 implementation
- * @author WAHAHA
- * @category encode-algorithm
- * @date 2024
+/*
+ * @file: base64.c
+ * @description: base64 implementation
+ * @author: WAHAHA
+ * @Date: 2024-02-28 11:06:35
+ * @LastEditTime: 2024-03-04 12:25:00
+ * @FilePath: \Serendipity\src\encode\base64.c
+ * @category: encode-algorithm
  */
 
 #include <encode/base64.h>
@@ -11,16 +13,26 @@
 #include <string.h>
 
  /**
- typedef struct base64_encoder {
+  typedef struct base64_encoder {
      const byte *b64_table;
-     status(*reset)(void);
-     status(*encode)(const byte *input, byte *output, const byte *b64_table);
-     status(*decode)(const byte *input, byte *output, const byte *b64_table);
+         status(*reset)(void);
+         status(*encode)(const byte *input, byte *output, const byte *b64_table);
+         status(*decode)(const byte *input, byte *output, const byte *b64_table);
  } base64_encoder;
  */
 
  /* base64 encoder constructor and destructor */
-base64_encoder *new_base64(const byte *b64_table) {
+ /*
+  * @Funticon name: new_base64
+  * @description: create a new base64 encoder
+  * @Author: WAHAHA
+  * @Date: 2024-03-04 12:15:45
+  * @Note: allow the b64_table to be NULL, if NULL, use the default table
+  * @param {byte} *b64_table
+  * @return {base64_encoder *}
+  */
+base64_encoder *new_base64(const byte *b64_table)
+{
     base64_encoder *encoder = (base64_encoder *)malloc(sizeof(base64_encoder));
     if (encoder == NULL)
         return NULL;
@@ -37,7 +49,17 @@ base64_encoder *new_base64(const byte *b64_table) {
     return encoder;
 }
 
-status free_base64(base64_encoder *encoder) {
+/*
+ * @Funticon name: free_base64
+ * @description: free the base64 encoder
+ * @Author: WAHAHA
+ * @Date: 2024-03-04 12:16:25
+ * @Note: None
+ * @param {base64_encoder} *encoder
+ * @return {status}
+ */
+status free_base64(base64_encoder *encoder)
+{
     ASSERT(encoder != NULL, error);
     free(encoder);
     return true;
@@ -45,7 +67,18 @@ status free_base64(base64_encoder *encoder) {
 
 
 /* base64 operations */
-status generate_reverse_table(const byte *b64_table, byte *reverse_table) {
+/*
+ * @Funticon name: generate_reverse_table
+ * @description: generate the reverse table of the base64 table
+ * @Author: WAHAHA
+ * @Date: 2024-03-04 12:17:25
+ * @Note: None
+ * @param {byte} *b64_table
+ * @param {byte} *reverse_table
+ * @return {status}
+ */
+status generate_reverse_table(const byte *b64_table, byte *reverse_table)
+{
     /**
      * Fill with 0xff, so if 0xff is accessed later,
      * it means that this character is not in the base64 table,
@@ -58,7 +91,18 @@ status generate_reverse_table(const byte *b64_table, byte *reverse_table) {
     return true;
 }
 
-status base64_change_table(base64_encoder *encoder, const byte *b64_table) {
+/*
+ * @Funticon name: base64_change_table
+ * @description: change the base64 table of the encoder
+ * @Author: WAHAHA
+ * @Date: 2024-03-04 12:18:23
+ * @Note: also change the reverse table
+ * @param {base64_encoder} *encoder
+ * @param {byte} *b64_table
+ * @return {status}
+ */
+status base64_change_table(base64_encoder *encoder, const byte *b64_table)
+{
     ASSERT(encoder != NULL, error);
     ASSERT(b64_table != NULL, error);
     memcpy(encoder->b64_table, b64_table, 64);
@@ -66,7 +110,17 @@ status base64_change_table(base64_encoder *encoder, const byte *b64_table) {
     return true;
 }
 
-status base64_reset(base64_encoder *encoder) {
+/*
+ * @Funticon name: base64_reset
+ * @description: reset the base64 encoder
+ * @Author: WAHAHA
+ * @Date: 2024-03-04 12:19:07
+ * @Note: None
+ * @param {base64_encoder} *encoder
+ * @return {status}
+ */
+status base64_reset(base64_encoder *encoder)
+{
     ASSERT(encoder != NULL, error);
     encoder->output_len = 0;
     memcpy(encoder->b64_table, base64_default_table, 64);
@@ -74,8 +128,17 @@ status base64_reset(base64_encoder *encoder) {
     return true;
 }
 
+/*
+ * @Funticon name: base64_encode
+ * @description: encode the input to base64
+ * @Author: WAHAHA
+ * @Date: 2024-03-04 12:19:32
+ * @Note: out_len can be NULL,length of output will be stored in encoder->output_len
+ * @return {status}
+ */
 status base64_encode(base64_encoder *encoder, const byte *input, int in_len,
-    byte *output, int *out_len) {
+    byte *output, int *out_len)
+{
     /* check the parameters */
     ASSERT(input != NULL, error);
     ASSERT(in_len > 0, error);
@@ -126,8 +189,17 @@ status base64_encode(base64_encoder *encoder, const byte *input, int in_len,
     return true;
 }
 
+/*
+ * @Funticon name: base64_decode
+ * @description: decode the input from base64
+ * @Author: WAHAHA
+ * @Date: 2024-03-04 12:22:21
+ * @Note: out_len can be NULL,length of output will be stored in encoder->output_len
+ * @return {status}
+ */
 status base64_decode(base64_encoder *encoder, const byte *input, int in_len,
-    byte *output, int *out_len) {
+    byte *output, int *out_len)
+{
     /* check the parameters */
     ASSERT(input != NULL, error);
     ASSERT(in_len > 0, error);
