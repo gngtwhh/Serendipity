@@ -3,7 +3,7 @@
  * @description: TEA encryption algorithm implementation
  * @author: WAHAHA
  * @Date: 2024-02-29 17:33:30
- * @LastEditTime: 2024-03-04 12:13:42
+ * @LastEditTime: 2024-03-04 14:40:13
  * @FilePath: \Serendipity\src\encrypt\tea.c
  * @category: encrypt-algorithm
  */
@@ -131,7 +131,7 @@ status tea_encrypt(tea_encipher *tea, uint32_t *plain, uint32_t *cipher)
     /* check the input */
     ASSERT(tea != NULL && plain != NULL && cipher != NULL, error);
     /* check if the plain text is valid */
-    ASSERT(tea->n & 1 == 0, false);
+    ASSERT((tea->n & 1) == 0, false);
     /* start to encrypt every block */
     status ret = true;
     for (int i = 0; i < tea->n; i += 2) {
@@ -156,7 +156,7 @@ status tea_decrypt(tea_encipher *tea, uint32_t *cipher, uint32_t *plain)
     /* check the input */
     ASSERT(tea != NULL && plain != NULL && cipher != NULL, error);
     /* check if the cipher text is valid */
-    ASSERT(tea->n & 1 == 0, false);
+    ASSERT((tea->n & 1) == 0, false);
     /* start to decrypt every block */
     status ret = true;
     for (int i = 0; i < tea->n; i += 2) {
@@ -233,7 +233,7 @@ status xtea_encrypt(tea_encipher *tea, uint32_t *plain, uint32_t *cipher)
     /* check the input */
     ASSERT(tea != NULL && plain != NULL && cipher != NULL, error);
     /* check if the plain text is valid */
-    ASSERT(tea->n & 1 == 0, false);
+    ASSERT((tea->n & 1) == 0, false);
     /* start to encrypt every block */
     status ret = true;
     for (int i = 0; i < tea->n; i += 2) {
@@ -258,7 +258,7 @@ status xtea_decrypt(tea_encipher *tea, uint32_t *cipher, uint32_t *plain)
     /* check the input */
     ASSERT(tea != NULL && plain != NULL && cipher != NULL, error);
     /* check if the cipher text is valid */
-    ASSERT(tea->n & 1 == 0, false);
+    ASSERT((tea->n & 1) == 0, false);
     /* start to decrypt every block */
     status ret = true;
     for (int i = 0; i < tea->n; i += 2) {
