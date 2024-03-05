@@ -1,3 +1,12 @@
+/*
+ * @file: File name
+ * @description: Briefly describe the file
+ * @author: WAHAHA
+ * @Date: 2024-02-28 11:06:35
+ * @LastEditTime: 2024-03-04 15:22:36
+ * @FilePath: \Serendipity\include\encode\encode_pre_init.h
+ * @category: File category
+ */
 /**
  * @file encode_pre_init.h
  * @brief This is a header file that contains the declaration of pre-initialization of encode algorithm.
@@ -24,8 +33,8 @@ typedef unsigned char byte;
 #define _BOOL_
 
 typedef int status;
-#define true 1
-#define false 0
+#define true 1 // correct execution
+#define false 0 // The data to be processed or initialized is incorrect
 #define error -1 // user's usage error
 #define failed -2 // system's failure
 
