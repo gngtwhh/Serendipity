@@ -3,7 +3,7 @@
  * @description: base64 implementation
  * @author: WAHAHA
  * @Date: 2024-02-28 11:06:35
- * @LastEditTime: 2024-03-04 12:25:00
+ * @LastEditTime: 2024-03-06 00:48:03
  * @FilePath: \Serendipity\src\encode\base64.c
  * @category: encode-algorithm
  */
@@ -88,6 +88,7 @@ status generate_reverse_table(const byte *b64_table, byte *reverse_table)
     for (int i = 0; i < 64; i++) {
         reverse_table[b64_table[i]] = i;
     }
+    reverse_table['='] = 0; // padding character
     return true;
 }
 
