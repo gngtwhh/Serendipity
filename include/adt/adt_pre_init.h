@@ -11,15 +11,15 @@
 
 #include <stdio.h>
 
-/* declare extanded boolean type */
-#ifndef _BOOL_
-#define _BOOL_
+/* declare extended boolean type */
+#ifndef SERENDIPITY_BOOL
+#define SERENDIPITY_BOOL
 
 typedef int status;
 #define true 1
 #define false 0
-#define error -1 // user's usage error
-#define failed -2 // system's failure
+#define error (-1) // user's usage error
+#define failed (-2) // system's failure
 
 #endif
 

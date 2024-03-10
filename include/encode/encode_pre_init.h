@@ -19,18 +19,19 @@
 #define _ENCODE_PRE_INIT_H_
 
 #include <stdio.h>
+#include <stdint.h>
 
- /* declare byte type */
-typedef unsigned char byte;
+/* declare byte type */
+typedef uint8_t byte;
 
 /* define bit operation macro */
 #define set_bit(x, i) (x |= (1 << i))
 #define clear_bit(x, i) (x &= ~(1 << i))
 #define get_bit(x, i) ((x >> i) & 1)
 
-/* declare extanded boolean type */
-#ifndef _BOOL_
-#define _BOOL_
+/* declare extended boolean type */
+#ifndef SERENDIPITY_BOOL
+#define SERENDIPITY_BOOL
 
 typedef int status;
 #define true 1 // correct execution
@@ -42,7 +43,7 @@ typedef int status;
 
 /* define assert macro */
 #ifndef ASSERT
-#define ASSERT(expr,code)                                       \
+#define ASSERT(expr, code)                                       \
 if(!(expr)) {                                                   \
     printf("[%s]:%s:%d is failed! error code: %d\r\n", \
         __FILE__,__FUNCTION__,__LINE__,code);                   \
