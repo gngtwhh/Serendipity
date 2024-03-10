@@ -1,4 +1,4 @@
-/*
+/**
  * @file: tea.c
  * @description: TEA encryption algorithm implementation
  * @author: WAHAHA
@@ -18,7 +18,7 @@
     ^ ((sum ^ y) + (tea->key[(p & 3) ^ e] ^ z)))
 
  /* TEA encipher */
- /*
+ /**
   * @Funticon name: new_tea
   * @description: new a tea_encipher object
   * @Author: WAHAHA
@@ -48,7 +48,7 @@ tea_encipher *new_tea(uint32_t delta, uint32_t key[4], int rounds)
     return tea;
 }
 
-/*
+/**
  * @Funticon name: free_tea
  * @description: free the tea_encipher object
  * @Author: WAHAHA
@@ -65,7 +65,7 @@ status free_tea(tea_encipher *tea)
 }
 
 /* TEA encrytion interface and subroutines */
-/*
+/**
  * @Funticon name: tea_block_encrypt
  * @description: encrypt a block of plain text(2 uint32_t) using TEA algorithm
  * @Author: WAHAHA
@@ -90,7 +90,7 @@ status tea_block_encrypt(tea_encipher *tea, uint32_t *plain, uint32_t *cipher)
     return true;
 }
 
-/*
+/**
  * @Funticon name: tea_block_decrypt
  * @description: decrypt a block of cipher text(2 uint32_t) using TEA algorithm
  * @Author: WAHAHA
@@ -115,7 +115,7 @@ status tea_block_decrypt(tea_encipher *tea, uint32_t *cipher, uint32_t *plain)
     return true;
 }
 
-/*
+/**
  * @Funticon name: tea_encrypt
  * @description: interface of TEA encrytion, encrypt the plain text using TEA algorithm
  * @Author: WAHAHA
@@ -140,7 +140,7 @@ status tea_encrypt(tea_encipher *tea, uint32_t *plain, uint32_t *cipher)
     return ret;
 }
 
-/*
+/**
  * @Funticon name: tea_decrypt
  * @description: interface of TEA decrytion, decrypt the cipher text using TEA algorithm
  * @Author: WAHAHA
@@ -167,7 +167,7 @@ status tea_decrypt(tea_encipher *tea, uint32_t *cipher, uint32_t *plain)
 
 
 /* XTEA encrytion interface and subroutines */
-/*
+/**
  * @Funticon name: xtea_block_encrypt
  * @description: encrypt a block of plain text(2 uint32_t) using XTEA algorithm
  * @Author: WAHAHA
@@ -192,7 +192,7 @@ status xtea_block_encrypt(tea_encipher *tea, uint32_t *plain, uint32_t *cipher)
     return true;
 }
 
-/*
+/**
  * @Funticon name: xtea_block_decrypt
  * @description: decrypt a block of cipher text(2 uint32_t) using XTEA algorithm
  * @Author: WAHAHA
@@ -217,7 +217,7 @@ status xtea_block_decrypt(tea_encipher *tea, uint32_t *cipher, uint32_t *plain)
     return true;
 }
 
-/*
+/**
  * @Funticon name: xtea_encrypt
  * @description: interface of XTEA encrytion, encrypt the plain text using XTEA algorithm
  * @Author: WAHAHA
@@ -242,7 +242,7 @@ status xtea_encrypt(tea_encipher *tea, uint32_t *plain, uint32_t *cipher)
     return ret;
 }
 
-/*
+/**
  * @Funticon name: xtea_decrypt
  * @description: interface of XTEA decrytion, decrypt the cipher text using XTEA algorithm
  * @Author: WAHAHA
@@ -267,7 +267,7 @@ status xtea_decrypt(tea_encipher *tea, uint32_t *cipher, uint32_t *plain)
     return ret;
 }
 
-/*
+/**
  * @Funticon name: xxtea_encrypt
  * @description: interface of XXTEA encrytion, encrypt the plain text using XXTEA algorithm
  * @Author: WAHAHA
@@ -300,7 +300,7 @@ status xxtea_encrypt(tea_encipher *tea, uint32_t *plain, uint32_t *cipher)
     return true;
 }
 
-/*
+/**
  * @Funticon name: xxtea_decrypt
  * @description: interface of XXTEA decrytion, decrypt the cipher text using XXTEA algorithm
  * @Author: WAHAHA

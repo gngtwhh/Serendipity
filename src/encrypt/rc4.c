@@ -1,4 +1,4 @@
-/*
+/**
  * @file: rc4.c
  * @description: RC4 encryption algorithm implementation
  * @author: WAHAHA
@@ -10,10 +10,19 @@
 
 #include <encrypt/rc4.h>
 
+rc4_encipher *new_rc4();
 
-
-rc4_encipher *new_rc4(NULL){}
+/**
+ * @Funticon name:
+ * @description:
+ * @Author: WAHAHA
+ * @Date: 2024-3-10 18:21:3
+ * @Note: None
+ * @param {} xxx
+ * @return {}
+ */
 status free_rc4(rc4_encipher *rc4);
 
 status rc4_set_key(rc4_encipher *rc4, uint8_t *key, int key_len);
+
 status rc4_crypt(rc4_encipher *rc4, uint8_t *data, int data_len, uint8_t *out_data);

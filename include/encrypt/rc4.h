@@ -1,4 +1,4 @@
-/*
+/**
  * @file: rc4.h
  * @description: This is a header file that contains the declaration of the RC4 encryption algorithm.
  * @author: WAHAHA
@@ -11,7 +11,7 @@
 #ifndef _RC4_H_
 #define _RC4_H_
 
- /* pre-initialization of encrypt */
+/* pre-initialization of encrypt */
 #include <encrypt/encrypt_pre_init.h>
 #include <stdint.h>
 
@@ -22,11 +22,13 @@ typedef struct rc4_encipher {
     int key_len;      // the length of the key
 } rc4_encipher;
 
-rc4_encipher *new_rc4(NULL);
+rc4_encipher *new_rc4();
+
 status free_rc4(rc4_encipher *rc4);
 
 /* RC4 functions */
 status rc4_set_key(rc4_encipher *rc4, uint8_t *key, int key_len);
+
 status rc4_crypt(rc4_encipher *rc4, uint8_t *data, int data_len, uint8_t *out_data);
 
 

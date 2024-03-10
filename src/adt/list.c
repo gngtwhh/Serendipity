@@ -1,4 +1,4 @@
-/*
+/**
  * @file: list.c
  * @description: List implementation
  * @author: WAHAHA
@@ -12,7 +12,7 @@
 #include <stdlib.h>
 
 
- /*
+ /**
  typedef struct list_node_s {
      void *data;
      struct list_node_s *next;
@@ -29,7 +29,7 @@
 
 
  /* list operations */
- /*
+ /**
   * @Funticon name: list_create
   * @description: create a new list
   * @Author: WAHAHA
@@ -55,7 +55,7 @@ list_t *list_create(int (*compare)(const void *, const void *),
     return new_list;
 }
 
-/*
+/**
  * @Funticon name: list_destroy
  * @description: destroy the list
  * @Author: WAHAHA
@@ -92,7 +92,7 @@ status list_destroy(list_t *list)
     return true;
 }
 
-/*
+/**
  * @Funticon name: list_insert
  * @description: insert data to the list
  * @Author: WAHAHA
@@ -144,7 +144,7 @@ status list_insert(list_t *list, size_t index, void *data)
     return true;
 }
 
-/*
+/**
  * @Funticon name: list_remove
  * @description: remove data from the list
  * @Author: WAHAHA
@@ -200,7 +200,7 @@ status list_remove(list_t *list, size_t index, void **data)
 }
 
 
-/*
+/**
  * @Funticon name: list_push_front
  * @description: push data to the front of the list
  * @Author: WAHAHA
@@ -215,7 +215,7 @@ status list_push_front(list_t *list, void *data)
     return list_insert(list, 0, data);
 }
 
-/*
+/**
  * @Funticon name: list_push_back
  * @description: push data to the back of the list
  * @Author: WAHAHA
@@ -235,7 +235,7 @@ status list_push_back(list_t *list, void *data)
 
 /* get the status of list */
 
-/*
+/**
 size_t list_size(list_t *list) {
     if (list == NULL) {
         fprintf(stderr, "[%s]:%s:%d is failed! error code: %d\r\n",
@@ -246,7 +246,7 @@ size_t list_size(list_t *list) {
 }
 */
 
-/*
+/**
 status list_empty(list_t *list) {
     ASSERT(list != NULL, error);
     return list->size == 0 ? true : false;
@@ -255,7 +255,7 @@ status list_empty(list_t *list) {
 
 /* get the data of list */
 
-/*
+/**
 void *list_front(list_t *list) {
     if (list == NULL || list->size == 0)
         return NULL;
@@ -263,7 +263,7 @@ void *list_front(list_t *list) {
 }
 */
 
-/*
+/**
 void *list_back(list_t *list) {
     if (list == NULL || list->size == 0)
         return NULL;
@@ -271,7 +271,7 @@ void *list_back(list_t *list) {
 }
 */
 
-/*
+/**
 * @Funticon name: list_get
 * @description: get the data of the list
 * @Author: WAHAHA

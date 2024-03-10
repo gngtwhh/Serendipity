@@ -1,4 +1,4 @@
-/*
+/**
  * @file: base64.c
  * @description: base64 implementation
  * @author: WAHAHA
@@ -22,7 +22,7 @@
 */
 
 /* base64 encoder constructor and destructor */
-/*
+/**
  * @Funticon name: new_base64
  * @description: create a new base64 encoder
  * @Author: WAHAHA
@@ -48,7 +48,7 @@ base64_encoder *new_base64(const byte *b64_table) {
     return encoder;
 }
 
-/*
+/**
  * @Funticon name: free_base64
  * @description: free the base64 encoder
  * @Author: WAHAHA
@@ -65,7 +65,7 @@ status free_base64(base64_encoder *encoder) {
 
 
 /* base64 operations */
-/*
+/**
  * @Funticon name: generate_reverse_table
  * @description: generate the reverse table of the base64 table
  * @Author: WAHAHA
@@ -89,7 +89,7 @@ status generate_reverse_table(const byte *b64_table, byte *reverse_table) {
     return true;
 }
 
-/*
+/**
  * @Funticon name: base64_change_table
  * @description: change the base64 table of the encoder
  * @Author: WAHAHA
@@ -107,7 +107,7 @@ status base64_change_table(base64_encoder *encoder, const byte *b64_table) {
     return true;
 }
 
-/*
+/**
  * @Funticon name: base64_reset
  * @description: reset the base64 encoder
  * @Author: WAHAHA
@@ -124,7 +124,7 @@ status base64_reset(base64_encoder *encoder) {
     return true;
 }
 
-/*
+/**
  * @Funticon name: base64_encode
  * @description: encode the input to base64
  * @Author: WAHAHA
@@ -184,7 +184,7 @@ status base64_encode(base64_encoder *encoder, const byte *input, int in_len,
     return true;
 }
 
-/*
+/**
  * @Funticon name: base64_decode
  * @description: decode the input from base64
  * @Author: WAHAHA

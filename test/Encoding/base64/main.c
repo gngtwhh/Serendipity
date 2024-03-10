@@ -1,4 +1,4 @@
-/*
+/**
  * @file: File name
  * @description: Briefly describe the file
  * @author: WAHAHA
@@ -14,12 +14,17 @@
 #include <string.h>
 
 int main() {
-    char table[] = "qaCpwYM2tO/RP0XeSZv8kLd6nfA7UHJ1No4gF5zr3VsBQbl9juhEGymc+WTxIiDK";
-    base64_encoder *b64 = new_base64(table);
-    char str[] = "AMHo7dLxUEabf6Z3PdWr6cOy75i4fdfeUzL17kaV7rG=";
+    base64_encoder *b64 = new_base64(NULL);
+    char str[] = "hello world";
     int len = strlen(str);
     char dec[100];
-    base64_decode(b64,str,len,dec,NULL);
+    base64_encode(b64, str, len, dec, NULL);
     puts(dec);
+    printf("len = %d\n", b64->output_len);
+    char str2[100];
+    base64_decode(b64, dec, 16, str2, NULL);
+    puts(str2);
+    printf("len = %d\n", b64->output_len);
+
     return 0;
 }

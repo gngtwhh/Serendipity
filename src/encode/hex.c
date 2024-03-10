@@ -1,4 +1,4 @@
-/*
+/**
  * @file: hex.c
  * @description: hex transform implementation
  * @author: WAHAHA
@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <string.h>
 
- /*
+ /**
   * @Funticon name: hex_to_bytes
   * @description: transform hex string to bytes
   * @Author: WAHAHA
@@ -47,7 +47,7 @@ status hex_to_bytes(const char *hex, size_t in_len,
     return true;
 }
 
-/*
+/**
  * @Funticon name: bytes_to_hex
  * @description: transform bytes to hex string
  * @Author: WAHAHA
