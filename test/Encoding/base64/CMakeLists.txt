@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(adt_list_test)
+project(encode_b64_test)
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../../include")
 

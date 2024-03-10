@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(encrypt_tea_test)
+project(encrypt_rc4_test)
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../../include")
 
@@ -10,7 +10,7 @@ set(
 )
 
 add_executable(
-    tea_test
+    rc4_test
     main.c
-    ${source_file_path}/encrypt/tea.c
+    ${source_file_path}/encrypt/rc4.c
 )
