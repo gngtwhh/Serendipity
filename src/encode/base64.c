@@ -141,11 +141,10 @@ status base64_encode(base64_encoder *encoder, const byte *input, int in_len,
     // ASSERT(out_len != NULL, error);
 
     /* calculate the length of output */
-    int pad_len = 0;
-    if (in_len % 3 != 0) {
-        pad_len = 3 - in_len % 3;
-    }
-    encoder->output_len = in_len / 3 * 4 + pad_len;
+    if (in_len % 3 != 0)
+        encoder->output_len = (in_len / 3 + 1) * 4;
+    else
+        encoder->output_len = in_len / 3 * 4;
 
 
     output[encoder->output_len] = '\0';
@@ -163,14 +162,14 @@ status base64_encode(base64_encoder *encoder, const byte *input, int in_len,
     /* fix the padding */
     if (i < in_len) {
         /* 2 bytes left */
-        if (pad_len == 1) {
+        if (in_len % 3 == 2) {
             output[j++] = table[input[i] >> 2];
             output[j++] = table[(input[i] & 0x03) << 4 | (input[i + 1] >> 4)];
             output[j++] = table[(input[i + 1] & 0x0f) << 2];
             output[encoder->output_len - 1] = '=';
         }
             /* 1 byte left */
-        else if (pad_len == 2) {
+        else if (in_len == 1) {
             output[j++] = table[input[i] >> 2];
             output[j++] = table[(input[i] & 0x03) << 4];
             output[encoder->output_len - 1] = '=';
