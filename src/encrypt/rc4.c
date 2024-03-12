@@ -23,8 +23,7 @@ rc4_encipher *new_rc4() {
     rc4_encipher *rc4 = (rc4_encipher *) malloc(sizeof(rc4_encipher));
     if (rc4 == NULL)
         return NULL;
-    for (int i = 0; i < 256; i++)
-        rc4->sbox[i] = i;
+    rc4->is_key_set = false;
     rc4->key = NULL;
     rc4->key_len = 0;
     return rc4;
@@ -65,7 +64,7 @@ status rc4_set_key(rc4_encipher *rc4, const byte *key, int key_len) {
     if (rc4->key != NULL)
         free(rc4->key);
     /* alloc the memory for the new key */
-    rc4->key = (uint8_t *) malloc(key_len);
+    rc4->key = (byte *) malloc(key_len);
     if (rc4->key == NULL)
         return error;
 
@@ -73,9 +72,13 @@ status rc4_set_key(rc4_encipher *rc4, const byte *key, int key_len) {
     for (int i = 0; i < key_len; i++)
         rc4->key[i] = key[i];
     rc4->key_len = key_len;
+    rc4->is_key_set = true;
 
-    /* generate the sbox */
-    return rc4_generate_sbox(rc4);
+    /*
+     * directly return true,the sbox will be generated in rc4_crypt(),
+     * for the sbox will be changed every time when encrypting the data
+     */
+    return true;
 }
 
 /**
@@ -90,6 +93,8 @@ status rc4_set_key(rc4_encipher *rc4, const byte *key, int key_len) {
 status rc4_generate_sbox(rc4_encipher *rc4) {
     ASSERT(rc4 != NULL, error);
     int j = 0;
+    for (int i = 0; i < 256; i++)
+        rc4->sbox[i] = i;
     for (int i = 0; i < 256; i++) {
         j = (j + rc4->sbox[i] + rc4->key[i % rc4->key_len]) % 256;
         byte temp = rc4->sbox[i];
@@ -112,7 +117,11 @@ status rc4_generate_sbox(rc4_encipher *rc4) {
  * @return {status}
  */
 status rc4_crypt(rc4_encipher *rc4, const byte *in_data, int data_len, byte *out_data) {
-    ASSERT(rc4 != NULL && in_data != NULL && out_data != NULL, error);
+    ASSERT(rc4 != NULL && in_data != NULL
+           && out_data != NULL && rc4->is_key_set, error);
+    /* generate the sbox */
+    ASSERT(rc4_generate_sbox(rc4), error);
+
     int i = 0, j = 0;
     for (int k = 0; k < data_len; k++) {
         /* update i and j */
@@ -126,5 +135,6 @@ status rc4_crypt(rc4_encipher *rc4, const byte *in_data, int data_len, byte *out
         int t = (rc4->sbox[i] + rc4->sbox[j]) % 256;
         out_data[k] = in_data[k] ^ rc4->sbox[t];
     }
+    out_data[data_len] = '\0';
     return true;
 }
