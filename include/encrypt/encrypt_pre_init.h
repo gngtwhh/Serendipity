@@ -29,13 +29,13 @@ typedef uint8_t byte;
 
 /* shift left and right */
 #define SHL_NBIT(data, bits) (data<<bits)
-#define SLR_NBIT(data, bits) (data>>bits)
+#define SHR_NBIT(data, bits) (data>>bits)
 
 /* cycle shift left and right */
 #define CYCLE_SHL_SIZE_NBIT(data, bits, type)        \
-    ((data << bits) | (data >> (bits_of(type) - bits)))
+    ((data << bits) | (data >> (BITS_OF(type) - bits)))
 #define CYCLE_SHR_SIZE_NBIT(data, bits, type)        \
-    ((data >> bits) | (data << (bits_of(type) - bits)))
+    ((data >> bits) | (data << (BITS_OF(type) - bits)))
 
 /* declare extended boolean type */
 #ifndef SERENDIPITY_BOOL

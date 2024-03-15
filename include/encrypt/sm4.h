@@ -15,10 +15,11 @@
 #include <encrypt/encrypt_pre_init.h>
 
 /* SM4 system parameters and macros */
-/* macro for SM4 */
+/* basic data length macro of SM4 */
 #define SM4_BLOCK_SIZE 16
 #define SM4_KEY_SIZE 16
 #define SM4_ROUND 32
+
 /* system parameters for SM4 */
 static const uint32_t SM4_FK[4] = {0xA3B1BAC6, 0x56AA3350, 0x677D9197, 0xB27022DC};
 static const uint32_t SM4_CK[32] = {
@@ -31,7 +32,7 @@ static const uint32_t SM4_CK[32] = {
         0xA0A7AEB5, 0xBCC3CAD1, 0xD8DFE6ED, 0xF4FB0209,
         0x10171E25, 0x2C333A41, 0x484F565D, 0x646B7279
 };
-static const uint8_t SM4_SBOX[16][16] = {
+static const uint8_t SM4_SBOX[256] = {
         0xD6, 0x90, 0xE9, 0xFE, 0xCC, 0xE1, 0x3D, 0xB7, 0x16, 0xB6, 0x14, 0xC2, 0x28, 0xFB, 0x2C, 0x05,
         0x2B, 0x67, 0x9A, 0x76, 0x2A, 0xBE, 0x04, 0xC3, 0xAA, 0x44, 0x13, 0x26, 0x49, 0x86, 0x06, 0x99,
         0x9C, 0x42, 0x50, 0xF4, 0x91, 0xEF, 0x98, 0x7A, 0x33, 0x54, 0x0B, 0x43, 0xED, 0xCF, 0xAC, 0x62,
@@ -47,14 +48,48 @@ static const uint8_t SM4_SBOX[16][16] = {
         0x8D, 0x1B, 0xAF, 0x92, 0xBB, 0xDD, 0xBC, 0x7F, 0x11, 0xD9, 0x5C, 0x41, 0x1F, 0x10, 0x5A, 0xd8,
         0x0A, 0xC1, 0x31, 0x88, 0xA5, 0xCD, 0x7B, 0xBD, 0x2D, 0x74, 0xD0, 0x12, 0xB8, 0xE5, 0xB4, 0xB0,
         0x89, 0x69, 0x97, 0x4A, 0x0C, 0x96, 0x77, 0x7E, 0x65, 0xB9, 0xF1, 0x09, 0xC5, 0x6E, 0xC6, 0x84,
-        0x18, 0xF0, 0x7D, 0xEC, 0x3A, 0xDC, 0x4D, 0x20, 0x79, 0xEE, 0x5F, 0x3E, 0xD7, 0xCB, 0x39, 0x48,
+        0x18, 0xF0, 0x7D, 0xEC, 0x3A, 0xDC, 0x4D, 0x20, 0x79, 0xEE, 0x5F, 0x3E, 0xD7, 0xCB, 0x39, 0x48
 };
+
+/* transformation function macros of SM4 */
+/* tau transformation */
+#define SM4_TAU(uint32_b)                           \
+    ( SM4_SBOX[SHR_NBIT(uint32_b,24)]<<24           \
+    | SM4_SBOX[SHR_NBIT(uint32_b,16) & 0xFF] <<16   \
+    | SM4_SBOX[SHR_NBIT(uint32_b,8) & 0xFF] <<8     \
+    | SM4_SBOX[uint32_b & 0xFF]                     \
+    )
+
+/* L' transformation of keygen */
+#define SM4_KEYGEN_L(uint32_b)                      \
+    ( b                                             \
+    ^ CYCLE_SHL_SIZE_NBIT(uint32_b, 13, uint32_t)   \
+    ^ CYCLE_SHL_SIZE_NBIT(uint32_b, 23, uint32_t)   \
+    )
+
+/* T' transformation of keygen */
+#define SM4_KEYGEN_T(uint32_b)                      \
+    (SM4_KEYGEN_L(SM4_TAU(uint32_b)))
+
+/* L transformation of round function */
+#define SM4_ROUND_L(uint32_b)                       \
+    ( uint32_b                                      \
+    ^ CYCLE_SHL_SIZE_NBIT(uint32_b, 2, uint32_t)    \
+    ^ CYCLE_SHL_SIZE_NBIT(uint32_b, 10, uint32_t)   \
+    ^ CYCLE_SHL_SIZE_NBIT(uint32_b, 18, uint32_t)   \
+    ^ CYCLE_SHL_SIZE_NBIT(uint32_b, 24, uint32_t)    \
+    )
+
+/* T transformation of round function */
+#define SM4_ROUND_T(uint32_b)                       \
+    ( SM4_ROUND_L( SM4_TAU(uint32_b) ) )
+
 
 /* SM4 encipher */
 typedef struct sm4_encipher {
-    uint32_t *sk; // the sk of SM4
-    byte *key;    // the key of SM4
-    status is_key_set; // the status of the SM4
+    uint32_t *rk;       // the rk of SM4
+    byte *key;          // the key of SM4
+    status is_key_set;  // the status of the SM4
 } sm4_encipher;
 
 /* sm4_encipher object */
@@ -63,7 +98,9 @@ sm4_encipher *new_sm4();
 status free_sm4(sm4_encipher *sm4);
 
 /* SM4 functions */
-status sm4_set_key(sm4_encipher *sm4, const byte *key);
+static status sm4_gengrate_subkey(sm4_encipher *sm4);
+
+status sm4_init(sm4_encipher *sm4, const byte *key);
 
 status sm4_crypt(sm4_encipher *sm4, const byte *in_data, int data_len, byte *out_data, int mode);
 
