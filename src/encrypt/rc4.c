@@ -20,12 +20,15 @@
  * @return {rc4_encipher *}
  */
 rc4_encipher *new_rc4() {
+    /* alloc the memory */
     rc4_encipher *rc4 = (rc4_encipher *) malloc(sizeof(rc4_encipher));
     if (rc4 == NULL)
         return NULL;
-    rc4->is_key_set = false;
+    /* set the default value */
+    rc4->sbox = NULL;
     rc4->key = NULL;
     rc4->key_len = 0;
+    rc4->initialized = false;
     return rc4;
 }
 
@@ -42,23 +45,30 @@ status free_rc4(rc4_encipher *rc4) {
     ASSERT(rc4 != NULL, error);
     if (rc4->key != NULL)
         free(rc4->key);
+    if (rc4->sbox != NULL)
+        free(rc4->sbox);
     free(rc4);
     return true;
 }
 
 /**
- * @Funticon name: rc4_set_key
+ * @Funticon name: rc4_init
  * @description: set the key of the rc4_encipher
  * @Author: WAHAHA
  * @Date: 2024-3-10 21:15:3
- * @Note: None
+ * @Note: the key_len must be greater than 0
+ * @Note: the sbox_len must be greater than or equal to 0
+ * @Note: if sbox_len is 0, use the default sbox length
  * @param {rc4_encipher} *rc4
  * @param {byte} *key
  * @param {int} key_len
+ * @param {int} sbox_len
  * @return {status}
  */
-status rc4_set_key(rc4_encipher *rc4, const byte *key, int key_len) {
+status rc4_init(rc4_encipher *rc4, const byte *key, int key_len, int sbox_len) {
+    /* check the parameters */
     ASSERT(rc4 != NULL && key != NULL, error);
+    ASSERT(key_len > 0 && sbox_len >= 0, error);
 
     /* if the key is not NULL, free it */
     if (rc4->key != NULL)
@@ -72,7 +82,15 @@ status rc4_set_key(rc4_encipher *rc4, const byte *key, int key_len) {
     for (int i = 0; i < key_len; i++)
         rc4->key[i] = key[i];
     rc4->key_len = key_len;
-    rc4->is_key_set = true;
+    rc4->initialized = true;
+
+    /* alloc the memory for the sbox */
+    rc4->sbox_len = sbox_len == 0 ? RC4_DEFAULT_SBOX_LEN : sbox_len;
+    if (rc4->sbox != NULL)
+        free(rc4->sbox);
+    rc4->sbox = (byte *) malloc(rc4->sbox_len);
+    if (rc4->sbox == NULL)
+        return error;
 
     /*
      * directly return true,the sbox will be generated in rc4_crypt(),
@@ -90,13 +108,13 @@ status rc4_set_key(rc4_encipher *rc4, const byte *key, int key_len) {
  * @param {rc4_encipher} *rc4
  * @return {status}
  */
-status rc4_generate_sbox(rc4_encipher *rc4) {
+static status rc4_generate_sbox(rc4_encipher *rc4) {
     ASSERT(rc4 != NULL, error);
     int j = 0;
-    for (int i = 0; i < 256; i++)
+    for (int i = 0; i < rc4->sbox_len; i++)
         rc4->sbox[i] = i;
-    for (int i = 0; i < 256; i++) {
-        j = (j + rc4->sbox[i] + rc4->key[i % rc4->key_len]) % 256;
+    for (int i = 0; i < rc4->sbox_len; i++) {
+        j = (j + rc4->sbox[i] + rc4->key[i % rc4->key_len]) % rc4->sbox_len;
         byte temp = rc4->sbox[i];
         rc4->sbox[i] = rc4->sbox[j];
         rc4->sbox[j] = temp;
@@ -118,21 +136,21 @@ status rc4_generate_sbox(rc4_encipher *rc4) {
  */
 status rc4_crypt(rc4_encipher *rc4, const byte *in_data, int data_len, byte *out_data) {
     ASSERT(rc4 != NULL && in_data != NULL
-           && out_data != NULL && rc4->is_key_set, error);
+           && out_data != NULL && rc4->initialized, error);
     /* generate the sbox */
     ASSERT(rc4_generate_sbox(rc4), error);
 
     int i = 0, j = 0;
     for (int k = 0; k < data_len; k++) {
         /* update i and j */
-        i = (i + 1) % 256;
-        j = (j + rc4->sbox[i]) % 256;
+        i = (i + 1) % rc4->sbox_len;
+        j = (j + rc4->sbox[i]) % rc4->sbox_len;
         /* swap sbox[i] and sbox[j] */
         byte temp = rc4->sbox[i];
         rc4->sbox[i] = rc4->sbox[j];
         rc4->sbox[j] = temp;
         /* crypt the data */
-        int t = (rc4->sbox[i] + rc4->sbox[j]) % 256;
+        int t = (rc4->sbox[i] + rc4->sbox[j]) % rc4->sbox_len;
         out_data[k] = in_data[k] ^ rc4->sbox[t];
     }
     out_data[data_len] = '\0';
