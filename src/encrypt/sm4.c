@@ -5,7 +5,7 @@
  * @Date: 2024/3/15 15:49
  * @LastEditTime: 2024/3/15 15:49
  * @FilePath: Serendipity/src/encrypt/SM4.c
- * @category: 
+ * @category: encrypt-algorithm
  */
 
 #include <encrypt/sm4.h>
@@ -26,9 +26,9 @@ sm4_encipher *new_sm4() {
     if (new_sm4 == NULL)
         return NULL;
     new_sm4->is_key_set = false;
-    /* the memory of "key" and "sk" will be allocated in the function of sm4_init */
+    /* the memory of "key" and "rk" will be allocated in the function of sm4_init */
     new_sm4->key = NULL;
-    new_sm4->sk = NULL;
+    new_sm4->rk = NULL;
     return new_sm4;
 }
 
@@ -45,8 +45,8 @@ status free_sm4(sm4_encipher *sm4) {
     ASSERT(sm4 != NULL, error);
     if (sm4->key != NULL)
         free(sm4->key);
-    if (sm4->sk != NULL)
-        free(sm4->sk);
+    if (sm4->rk != NULL)
+        free(sm4->rk);
     free(sm4);
     return true;
 }
@@ -99,14 +99,69 @@ static status sm4_gengrate_subkey(sm4_encipher *sm4) {
  * @return {status}
  */
 status sm4_init(sm4_encipher *sm4, const byte *key) {
+    /* check the parameters */
     ASSERT(sm4 != NULL && key != NULL, error);
+    /* allocate the memory for the key and rk */
     sm4->key = (byte *) malloc(SM4_KEY_SIZE);
-    sm4->sk = (uint32_t *) malloc(SM4_ROUND * sizeof(uint32_t));
+    sm4->rk = (uint32_t *) malloc(SM4_ROUND * sizeof(uint32_t));
     if (sm4->key == NULL || sm4->rk == NULL)
         return failed;
+    /* copy the key */
     memcpy(sm4->key, key, SM4_KEY_SIZE);
     sm4->is_key_set = true;
+    /* generate the subkey,and return the status */
     return sm4_gengrate_subkey(sm4);
 }
 
-status sm4_crypt(sm4_encipher *sm4, const byte *in_data, int data_len, byte *out_data, int mode);
+/**
+ * @Funticon name: sm4_crypt
+ * @description: encrypt or decrypt the data with the sm4_encipher object
+ * @Author: WAHAHA
+ * @Date: 2024-3-19 1:55:28
+ * @Note: If mode == 1, encryption is performed. If mode == -1, decryption is performed.
+ * Other values are invalid
+ * @param {sm4_encipher} *sm4
+ * @return {status}
+ */
+status sm4_crypt(sm4_encipher *sm4, const byte *in_data, int data_len, byte *out_data, int mode) {
+    /* check the parameters */
+    ASSERT(sm4 != NULL && in_data != NULL && out_data != NULL, error);
+    ASSERT(data_len > 0 && (mode == 1 || mode == -1), error);
+    ASSERT(sm4->is_key_set, error);
+    /* the length of the data should be a multiple of 16 */
+    ASSERT(data_len % 16 == 0, error);
+
+    /* some temporary variables */
+    uint32_t *rk = sm4->rk;
+    uint32_t *data = (uint32_t *) in_data;
+    uint32_t *out = (uint32_t *) out_data;
+    uint32_t x[4], tmp;
+
+    /* encrypt or decrypt the data */
+    for (int i = 0; i < data_len / 16; i++) {
+        memcpy(x, data + i * 4, 16);
+        if (mode == 1) {
+            for (int j = 0; j < SM4_ROUND; j++) {
+                tmp = x[1] ^ x[2] ^ x[3] ^ rk[j];
+                x[0] ^= SM4_ROUND_T(tmp);
+                tmp = x[0];
+                x[0] = x[1];
+                x[1] = x[2];
+                x[2] = x[3];
+                x[3] = tmp;
+            }
+        } else {
+            for (int j = SM4_ROUND - 1; j >= 0; j--) {
+                tmp = x[1] ^ x[2] ^ x[3] ^ rk[j];
+                x[0] ^= SM4_ROUND_T(tmp);
+                tmp = x[0];
+                x[0] = x[1];
+                x[1] = x[2];
+                x[2] = x[3];
+                x[3] = tmp;
+            }
+        }
+        memcpy(out + i * 4, x, 16);
+    }
+    return true;
+}
