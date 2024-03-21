@@ -54,9 +54,9 @@ typedef int status;
 
 #include <stdio.h>
 
-#define ASSERT(expr, code)                                       \
+#define ASSERT(expr, code)                                      \
 if(!(expr)) {                                                   \
-    printf("[%s]:%s:%d is failed! error code: %d\r\n", \
+    printf("[%s]:%s:%d is failed! error code: %d\r\n",          \
         __FILE__,__FUNCTION__,__LINE__,code);                   \
     return code;                                                \
 }
