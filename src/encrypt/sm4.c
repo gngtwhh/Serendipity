@@ -63,28 +63,28 @@ status free_sm4(sm4_encipher *sm4) {
 static status sm4_gengrate_subkey(sm4_encipher *sm4) {
     ASSERT(sm4 != NULL, error);
     uint32_t *rk = sm4->rk;
-    uint32_t *mk = (uint32_t *) sm4->key;
-    uint32_t k[4];
+    uint32_t *key = (uint32_t *) sm4->key;
+    uint32_t mk[4];
 
-    /* xor the mk with the FK */
+    /* xor the key with the FK */
     for (int i = 0; i < 4; i++)
-        k[i] = mk[i] ^ SM4_FK[i];
+        mk[i] = key[i] ^ SM4_FK[i];
 
-    /* generate the subkey */
     /*
-     * to prevent macros from expanding too long
-     * use a temporary variable to store the result
+     * generate the subkey,
+     * 4 round keys are processed per round cycle to improve efficiency.
      */
-    uint32_t tmp;
-    for (int i = 0; i < SM4_ROUND; i++) {
-        tmp = k[1] ^ k[2] ^ k[3] ^ SM4_CK[i];
-        k[0] ^= SM4_ROUND_T(tmp);
-        rk[i] = k[0];
-        k[0] = k[1];
-        k[1] = k[2];
-        k[2] = k[3];
-        k[3] = rk[i];
-    }
+    uint32_t i = 0;
+    do {
+        rk[i] = (mk[0] ^= SM4_ROUND_T(mk[1] ^ mk[2] ^ mk[3] ^ SM4_CK[i]));
+        i++;
+        rk[i] = (mk[1] ^= SM4_ROUND_T(mk[2] ^ mk[3] ^ mk[0] ^ SM4_CK[i]));
+        i++;
+        rk[i] = (mk[2] ^= SM4_ROUND_T(mk[3] ^ mk[0] ^ mk[1] ^ SM4_CK[i]));
+        i++;
+        rk[i] = (mk[3] ^= SM4_ROUND_T(mk[0] ^ mk[1] ^ mk[2] ^ SM4_CK[i]));
+        i++;
+    } while (i < SM4_ROUND);
     return true;
 }
 
