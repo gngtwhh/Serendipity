@@ -28,7 +28,7 @@ byte *pkcs7_pad(byte *data, size_t data_len, size_t block_size) {
     if (data == NULL)
         return NULL;
 
-    byte pad_value = block_size - (data_len % block_size);
+    byte pad_value = pkcs7_pad_len(data_len, block_size);
     size_t pad_data_len = data_len + pad_value;
     byte *output = (byte *) malloc(sizeof(byte) * pad_data_len);
     if (output == NULL)
@@ -70,7 +70,30 @@ byte *pkcs7_unpad(byte *data, size_t data_len, size_t block_size) {
     return output;
 }
 
-/* PKCS5 padding and unpadding */
-byte *pkcs5_pad(byte *data, size_t data_len, size_t block_size);
+/**
+ * @Funticon name: pkcs5_pad
+ * @description: padding the data with PKCS5
+ * @Author: WAHAHA
+ * @Date: 2024-3-21 16:1:26
+ * @Note: This function will return a new memory block,which should be freed by the caller.
+ * @param {byte} *data
+ * @param {size_t} data_len
+ * @return {byte *}
+ */
+byte *pkcs5_pad(byte *data, size_t data_len){
+    return pkcs7_pad(data, data_len, PKCS5_BLOCK_SIZE);
+}
 
-byte *pkcs5_unpad(byte *data, size_t data_len, size_t block_size);
+/**
+ * @Funticon name: pkcs5_unpad
+ * @description: unpadding the data with PKCS5
+ * @Author: WAHAHA
+ * @Date: 2024-3-21 16:4:35
+ * @Note: This function will return a new memory block,which should be freed by the caller.
+ * @param {byte} *data
+ * @param {size_t} data_len
+ * @return {byte *}
+ */
+byte *pkcs5_unpad(byte *data, size_t data_len){
+    return pkcs7_unpad(data, data_len, PKCS5_BLOCK_SIZE);
+}
