@@ -12,5 +12,6 @@ set(
 add_executable(
     sm4_test
     main.c
-    ${source_file_path}/encrypt/rc4.c
+    ${source_file_path}/encrypt/sm4.c
+        ../../../src/encrypt/pkcspad.c
 )

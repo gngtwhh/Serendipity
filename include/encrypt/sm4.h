@@ -19,6 +19,9 @@
 #define SM4_BLOCK_SIZE 16
 #define SM4_KEY_SIZE 16
 #define SM4_ROUND 32
+/* encryption and decryption mode */
+#define SM4_ENCRYPT 1
+#define SM4_DECRYPT -1
 
 /* system parameters for SM4 */
 static const uint32_t SM4_FK[4] = {0xA3B1BAC6, 0x56AA3350, 0x677D9197, 0xB27022DC};
@@ -69,16 +72,16 @@ static const uint8_t SM4_SBOX[256] = {
 
 /* transformation function macros of SM4 */
 /* tau transformation */
-#define SM4_TAU(uint32_b)                           \
-    ( SM4_SBOX[SHR_NBIT(uint32_b,24)]<<24           \
-    | SM4_SBOX[SHR_NBIT(uint32_b,16) & 0xFF] <<16   \
-    | SM4_SBOX[SHR_NBIT(uint32_b,8) & 0xFF] <<8     \
-    | SM4_SBOX[uint32_b & 0xFF]                     \
+#define SM4_TAU(uint32_b)                             \
+    ( SM4_SBOX[SHR_NBIT((uint32_b),24)]<<24           \
+    | SM4_SBOX[SHR_NBIT((uint32_b),16) & 0xFF] <<16   \
+    | SM4_SBOX[SHR_NBIT((uint32_b),8) & 0xFF] <<8     \
+    | SM4_SBOX[(uint32_b) & 0xFF]                     \
     )
 
 /* L' transformation of keygen */
 #define SM4_KEYGEN_L(uint32_b)                      \
-    ( b                                             \
+    ( (uint32_b)                                    \
     ^ CYCLE_SHL_SIZE_NBIT(uint32_b, 13, uint32_t)   \
     ^ CYCLE_SHL_SIZE_NBIT(uint32_b, 23, uint32_t)   \
     )
@@ -98,7 +101,7 @@ static const uint8_t SM4_SBOX[256] = {
 
 /* T transformation of round function */
 #define SM4_ROUND_T(uint32_b)                       \
-    ( SM4_ROUND_L( SM4_TAU(uint32_b) ) )
+    ( SM4_ROUND_L(SM4_TAU(uint32_b)))
 
 
 /* SM4 encipher */

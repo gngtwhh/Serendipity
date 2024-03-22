@@ -14,17 +14,12 @@
 #include <string.h>
 
 int main() {
-    base64_encoder *b64 = new_base64(NULL);
-    char str[] = "hello world";
-    int len = strlen(str);
-    char dec[100];
-    base64_encode(b64, str, len, dec, NULL);
-    puts(dec);
-    printf("len = %d\n", b64->output_len);
-    char str2[100];
-    base64_decode(b64, dec, 16, str2, NULL);
-    puts(str2);
-    printf("len = %d\n", b64->output_len);
+    char table[] = "0123456789XYZabcdefghijklABCDEFGHIJKLMNOPQRSTUVWmnopqrstuvwxyz+/=";
+    base64_encoder *b64 = new_base64((uint8_t *) table);
+    char *input = "hello";
+    byte output[100];
+    base64_encode(b64, input, strlen(input), output, NULL);
+    puts(output);
 
     return 0;
 }
