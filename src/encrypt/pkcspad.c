@@ -24,7 +24,7 @@
  * @param {size_t} block_size
  * @return {byte *}
  */
-byte *pkcs7_pad(byte *data, size_t data_len, size_t block_size) {
+byte *pkcs7_pad(const byte *data, size_t data_len, size_t block_size) {
     if (data == NULL)
         return NULL;
 
@@ -51,7 +51,7 @@ byte *pkcs7_pad(byte *data, size_t data_len, size_t block_size) {
  * @param {size_t} block_size
  * @return {byte *}
  */
-byte *pkcs7_unpad(byte *data, size_t data_len, size_t block_size) {
+byte *pkcs7_unpad(const byte *data, size_t data_len, size_t block_size) {
     if (data == NULL)
         return NULL;
 
@@ -80,7 +80,7 @@ byte *pkcs7_unpad(byte *data, size_t data_len, size_t block_size) {
  * @param {size_t} data_len
  * @return {byte *}
  */
-byte *pkcs5_pad(byte *data, size_t data_len){
+byte *pkcs5_pad(const byte *data, size_t data_len){
     return pkcs7_pad(data, data_len, PKCS5_BLOCK_SIZE);
 }
 
@@ -94,6 +94,6 @@ byte *pkcs5_pad(byte *data, size_t data_len){
  * @param {size_t} data_len
  * @return {byte *}
  */
-byte *pkcs5_unpad(byte *data, size_t data_len){
+byte *pkcs5_unpad(const byte *data, size_t data_len){
     return pkcs7_unpad(data, data_len, PKCS5_BLOCK_SIZE);
 }

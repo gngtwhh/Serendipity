@@ -9,6 +9,7 @@
  */
 
 #include <encrypt/sm4.h>
+#include <encrypt/pkcspad.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -114,54 +115,19 @@ status sm4_init(sm4_encipher *sm4, const byte *key) {
 }
 
 /**
- * @Funticon name: sm4_crypt
- * @description: encrypt or decrypt the data with the sm4_encipher object
+ * @Funticon name: sm4_encrypt
+ * @description: encrypt the data with the sm4_encipher object
  * @Author: WAHAHA
  * @Date: 2024-3-19 1:55:28
- * @Note: If mode == 1, encryption is performed. If mode == -1, decryption is performed.
- * Other values are invalid
  * @param {sm4_encipher} *sm4
+ * @param {byte} *in_data
+ * @param {int} data_len
+ * @param {byte} *out_data
+ * @param {int} *out_data_len
  * @return {status}
  */
-status sm4_crypt(sm4_encipher *sm4, const byte *in_data, int data_len, byte *out_data, int mode) {
-    /* check the parameters */
-    ASSERT(sm4 != NULL && in_data != NULL && out_data != NULL, error);
-    ASSERT(data_len > 0 && (mode == 1 || mode == -1), error);
-    ASSERT(sm4->is_key_set, error);
-    /* the length of the data should be a multiple of 16 */
-    ASSERT(data_len % 16 == 0, error);
+status sm4_encrypt(sm4_encipher *sm4, const byte *in_data, int in_data_len, byte *out_data,int *out_data_len);
 
-    /* some temporary variables */
-    uint32_t *rk = sm4->rk;
-    uint32_t *data = (uint32_t *) in_data;
-    uint32_t *out = (uint32_t *) out_data;
-    uint32_t x[4], tmp;
+status sm4_decrypt(sm4_encipher *sm4, const byte *in_data, int in_data_len, byte *out_data,int *out_data_len);
 
-    /* encrypt or decrypt the data */
-    for (int i = 0; i < data_len / 16; i++) {
-        memcpy(x, data + i * 4, 16);
-        if (mode == 1) {
-            for (int j = 0; j < SM4_ROUND; j++) {
-                tmp = x[1] ^ x[2] ^ x[3] ^ rk[j];
-                x[0] ^= SM4_ROUND_T(tmp);
-                tmp = x[0];
-                x[0] = x[1];
-                x[1] = x[2];
-                x[2] = x[3];
-                x[3] = tmp;
-            }
-        } else {
-            for (int j = SM4_ROUND - 1; j >= 0; j--) {
-                tmp = x[1] ^ x[2] ^ x[3] ^ rk[j];
-                x[0] ^= SM4_ROUND_T(tmp);
-                tmp = x[0];
-                x[0] = x[1];
-                x[1] = x[2];
-                x[2] = x[3];
-                x[3] = tmp;
-            }
-        }
-        memcpy(out + i * 4, x, 16);
-    }
-    return true;
-}
+status sm4_crypt_block(sm4_encipher *sm4, const uint32_t *in_data, uint32_t *out_data, int mode);

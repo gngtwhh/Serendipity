@@ -80,27 +80,27 @@ static const uint8_t SM4_SBOX[256] = {
     )
 
 /* L' transformation of keygen */
-#define SM4_KEYGEN_L(uint32_b)                      \
-    ( (uint32_b)                                    \
-    ^ CYCLE_SHL_SIZE_NBIT(uint32_b, 13, uint32_t)   \
-    ^ CYCLE_SHL_SIZE_NBIT(uint32_b, 23, uint32_t)   \
+#define SM4_KEYGEN_L(uint32_b)                        \
+    ( (uint32_b)                                      \
+    ^ CYCLE_SHL_SIZE_NBIT(uint32_b, 13, uint32_t)     \
+    ^ CYCLE_SHL_SIZE_NBIT(uint32_b, 23, uint32_t)     \
     )
 
 /* T' transformation of keygen */
-#define SM4_KEYGEN_T(uint32_b)                      \
+#define SM4_KEYGEN_T(uint32_b)                        \
     (SM4_KEYGEN_L(SM4_TAU(uint32_b)))
 
 /* L transformation of round function */
-#define SM4_ROUND_L(uint32_b)                       \
-    ( uint32_b                                      \
-    ^ CYCLE_SHL_SIZE_NBIT(uint32_b, 2, uint32_t)    \
-    ^ CYCLE_SHL_SIZE_NBIT(uint32_b, 10, uint32_t)   \
-    ^ CYCLE_SHL_SIZE_NBIT(uint32_b, 18, uint32_t)   \
-    ^ CYCLE_SHL_SIZE_NBIT(uint32_b, 24, uint32_t)   \
+#define SM4_ROUND_L(uint32_b)                         \
+    ( uint32_b                                        \
+    ^ CYCLE_SHL_SIZE_NBIT(uint32_b, 2, uint32_t)      \
+    ^ CYCLE_SHL_SIZE_NBIT(uint32_b, 10, uint32_t)     \
+    ^ CYCLE_SHL_SIZE_NBIT(uint32_b, 18, uint32_t)     \
+    ^ CYCLE_SHL_SIZE_NBIT(uint32_b, 24, uint32_t)     \
     )
 
 /* T transformation of round function */
-#define SM4_ROUND_T(uint32_b)                       \
+#define SM4_ROUND_T(uint32_b)                         \
     ( SM4_ROUND_L(SM4_TAU(uint32_b)))
 
 
@@ -117,10 +117,18 @@ sm4_encipher *new_sm4();
 status free_sm4(sm4_encipher *sm4);
 
 /* SM4 functions */
+/* generate the subkey of the sm4_encipher */
 static status sm4_gengrate_subkey(sm4_encipher *sm4);
 
+/* initialize the sm4_encipher object with a 128-bit key */
 status sm4_init(sm4_encipher *sm4, const byte *key);
 
-status sm4_crypt(sm4_encipher *sm4, const byte *in_data, int data_len, byte *out_data, int mode);
+/* encrypt and decrypt the data */
+status sm4_encrypt(sm4_encipher *sm4, const byte *in_data, int in_data_len, byte *out_data,int *out_data_len);
+
+status sm4_decrypt(sm4_encipher *sm4, const byte *in_data, int in_data_len, byte *out_data,int *out_data_len);
+
+/* block encrypt and decrypt */
+status sm4_crypt_block(sm4_encipher *sm4, const uint32_t *in_data, uint32_t *out_data, int mode);
 
 #endif //SERENDIPITY_SM4_H
