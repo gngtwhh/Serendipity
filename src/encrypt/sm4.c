@@ -77,13 +77,13 @@ static status sm4_gengrate_subkey(sm4_encipher *sm4) {
      */
     uint32_t i = 0;
     do {
-        rk[i] = (mk[0] ^= SM4_ROUND_T(mk[1] ^ mk[2] ^ mk[3] ^ SM4_CK[i]));
+        rk[i] = (mk[0] ^= SM4_KEYGEN_T(mk[1] ^ mk[2] ^ mk[3] ^ SM4_CK[i]));
         i++;
-        rk[i] = (mk[1] ^= SM4_ROUND_T(mk[2] ^ mk[3] ^ mk[0] ^ SM4_CK[i]));
+        rk[i] = (mk[1] ^= SM4_KEYGEN_T(mk[2] ^ mk[3] ^ mk[0] ^ SM4_CK[i]));
         i++;
-        rk[i] = (mk[2] ^= SM4_ROUND_T(mk[3] ^ mk[0] ^ mk[1] ^ SM4_CK[i]));
+        rk[i] = (mk[2] ^= SM4_KEYGEN_T(mk[3] ^ mk[0] ^ mk[1] ^ SM4_CK[i]));
         i++;
-        rk[i] = (mk[3] ^= SM4_ROUND_T(mk[0] ^ mk[1] ^ mk[2] ^ SM4_CK[i]));
+        rk[i] = (mk[3] ^= SM4_KEYGEN_T(mk[0] ^ mk[1] ^ mk[2] ^ SM4_CK[i]));
         i++;
     } while (i < SM4_ROUND);
     return true;
@@ -157,6 +157,32 @@ status sm4_decrypt(sm4_encipher *sm4, const byte *in_data, int in_data_len, byte
                    int *out_data_len);
 
 status sm4_crypt_block_round(sm4_encipher *sm4, const uint32_t *in_data, uint32_t *out_data,
-                             int mode);
+                             int mode) {
+    /* check the parameters */
+    ASSERT(sm4 != NULL && in_data != NULL && out_data != NULL, error);
+    ASSERT(mode == SM4_ENCRYPT || mode == SM4_DECRYPT, error);
+    /* nessary variables */
+    uint32_t *rk = sm4->rk;
+    uint32_t x[SM4_BLOCK_SIZE / sizeof(uint32_t)];
+    int i, step = mode;
+    i = mode == SM4_ENCRYPT ? 0 : SM4_ROUND - 1;
+    /* copy the data */
+    memcpy(x, in_data, SM4_BLOCK_SIZE);
+    /* 32 rounds of encryption */
+    do {
+        x[0] ^= SM4_ROUND_T(x[1] ^ x[2] ^ x[3] ^ rk[i]);
+        i += step;
+        x[1] ^= SM4_ROUND_T(x[2] ^ x[3] ^ x[0] ^ rk[i]);
+        i += step;
+        x[2] ^= SM4_ROUND_T(x[3] ^ x[0] ^ x[1] ^ rk[i]);
+        i += step;
+        x[3] ^= SM4_ROUND_T(x[0] ^ x[1] ^ x[2] ^ rk[i]);
+        i += step;
+
+    } while (mode == SM4_ENCRYPT ? (i < SM4_ROUND) : (i >= 0));
+    /* copy the data */
+    memcpy(out_data, x, SM4_BLOCK_SIZE);
+    return true;
+}
 
 status sm4_crypt_block_reverse(uint32_t *data);
