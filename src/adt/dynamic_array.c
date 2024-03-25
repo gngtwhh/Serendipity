@@ -1,3 +1,11 @@
+/**
+ * @file dynamic_array.c
+ * @brief dynamic array implementation
+ * @author inrootshell
+ * @category data-structure
+ * @date 2024-3-25
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,10 +28,46 @@ typedef struct dynamic_array
 
 typedef int status;
 
+
+/*
+*@function name:initialize_dynamic_array
+*@arguments:initialize dynamic array size
+*@return type:dynamicarray_ptr_t
+*@return value:success return a pointer failed return NULL
+*/
 dynamicarray_ptr_t initialize_dynamic_array(int _Fn_In_ initial_capacity_size);
+
+/*
+*@function name:insert_array_element
+*@arguments:dynamic array pointer, insert position and insert data
+*@return type:status
+*@return value:success return 1 failed return -1
+*/
 status insert_array_element(dynamicarray_ptr_t _Fn_In_ dynamic_array, int _Fn_In_ insert_position, void* _Fn_In_ insert_data);
+
+/*
+*@function name:delete_array_element
+*@arguments:dynamic array pointer, delete position and reseved data pointer
+*@return type:status
+*@return value:success return 1 failed return -1
+*/
 status delete_array_element(dynamicarray_ptr_t _Fn_In_ dynamic_array, int _Fn_In_ delete_position, void** _Fn_Out_ reserved);
+
+/*
+*@function name:print_array_element
+*@arguments:dynamic array pointer, back call function print_func
+*@return type:void
+*@return value:void
+*/
 status print_array_element(dynamicarray_ptr_t _Fn_In_ dynamic_array, void (*print_func)(void* print_data));
+
+/*
+*@function name:free_dynamic_array
+*@arguments:dynamic array pointer
+*@return type:status
+*@return value:success return 1 failed return -1
+*/
+status free_dynamic_array(dynamicarray_ptr_t _Fn_In_ dynamic_array);
 
 void print_back_call(void* print_data)
 {
@@ -53,7 +97,7 @@ int main()
 	insert_array_element(array, 2, &v3);
 	delete_array_element(array, 1, (void**)&re);
 	print_array_element(array, print_back_call);
-	
+	free_dynamic_array(array);
 	return 0;
 }
 
@@ -167,4 +211,17 @@ status delete_array_element(dynamicarray_ptr_t _Fn_In_ dynamic_array, int _Fn_In
 	}
 	dynamic_array->array_size--; 
 	return 0;
+}
+
+status free_dynamic_array(dynamicarray_ptr_t _Fn_In_ dynamic_array)
+{
+	if(dynamic_array == NULL)
+	{
+		return -1;
+	}
+	
+	free(dynamic_array->dynamic_array);
+	free(dynamic_array);
+	
+	return 1;
 }
