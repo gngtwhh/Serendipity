@@ -126,8 +126,37 @@ status sm4_init(sm4_encipher *sm4, const byte *key) {
  * @param {int} *out_data_len
  * @return {status}
  */
-status sm4_encrypt(sm4_encipher *sm4, const byte *in_data, int in_data_len, byte *out_data,int *out_data_len);
+status sm4_encrypt(sm4_encipher *sm4, const byte *in_data, int in_data_len, byte *out_data,
+                   int *out_data_len) {
+    /* check the parameters */
+    ASSERT(sm4 != NULL && in_data != NULL && out_data != NULL && out_data_len != NULL, error);
+    ASSERT(sm4->is_key_set, error);
+    /* calculate the length of the data after padding */
+    int pad_len = pkcs7_pad_len(in_data_len, SM4_BLOCK_SIZE);
+    *out_data_len = in_data_len + pad_len;
+    /* allocate the memory for the padded data */
+    byte *pad_data = pkcs7_pad(in_data, in_data_len, SM4_BLOCK_SIZE);
+    if (pad_data == NULL)
+        return failed; // memory allocation failed
 
-status sm4_decrypt(sm4_encipher *sm4, const byte *in_data, int in_data_len, byte *out_data,int *out_data_len);
+    /* encrypt the data */
+    /* encrypt the data block by block */
+    for (int i = 0; i < *out_data_len; i += SM4_BLOCK_SIZE) {
+        /* step 1: 32 rounds of encryption */
+        sm4_crypt_block_round(sm4, (uint32_t * )(pad_data + i),
+                              (uint32_t * )(out_data + i), SM4_ENCRYPT);
+        /* step 2: reverse the data */
+        sm4_crypt_block_reverse((uint32_t * )(out_data + i));
+    }
+    /* free the memory */
+    free(pad_data);
+    return true;
+}
 
-status sm4_crypt_block(sm4_encipher *sm4, const uint32_t *in_data, uint32_t *out_data, int mode);
+status sm4_decrypt(sm4_encipher *sm4, const byte *in_data, int in_data_len, byte *out_data,
+                   int *out_data_len);
+
+status sm4_crypt_block_round(sm4_encipher *sm4, const uint32_t *in_data, uint32_t *out_data,
+                             int mode);
+
+status sm4_crypt_block_reverse(uint32_t *data);
