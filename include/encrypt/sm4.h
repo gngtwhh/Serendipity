@@ -124,11 +124,17 @@ static status sm4_gengrate_subkey(sm4_encipher *sm4);
 status sm4_init(sm4_encipher *sm4, const byte *key);
 
 /* encrypt and decrypt the data */
-status sm4_encrypt(sm4_encipher *sm4, const byte *in_data, int in_data_len, byte *out_data,int *out_data_len);
+status sm4_encrypt(sm4_encipher *sm4, const byte *in_data, int in_data_len, byte *out_data,
+                   int *out_data_len);
 
-status sm4_decrypt(sm4_encipher *sm4, const byte *in_data, int in_data_len, byte *out_data,int *out_data_len);
+status sm4_decrypt(sm4_encipher *sm4, const byte *in_data, int in_data_len, byte *out_data,
+                   int *out_data_len);
 
-/* block encrypt and decrypt */
-status sm4_crypt_block(sm4_encipher *sm4, const uint32_t *in_data, uint32_t *out_data, int mode);
+/* round function of SM4 */
+status sm4_crypt_block_round(sm4_encipher *sm4, const uint32_t *in_data, uint32_t *out_data,
+                             int mode);
+
+/* reverse the data */
+status sm4_crypt_block_reverse(uint32_t *data);
 
 #endif //SERENDIPITY_SM4_H
