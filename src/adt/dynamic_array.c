@@ -22,7 +22,7 @@ typedef int status;
 
 dynamicarray_ptr_t initialize_dynamic_array(int _Fn_In_ initial_capacity_size);
 status insert_array_element(dynamicarray_ptr_t _Fn_In_ dynamic_array, int _Fn_In_ insert_position, void* _Fn_In_ insert_data);
-status delete_array_element(dynamicarray_ptr_t _Fn_In_ dynamic_array, int _Fn_In_ insert_position, void** _Fn_Out_ reserved);
+status delete_array_element(dynamicarray_ptr_t _Fn_In_ dynamic_array, int _Fn_In_ delete_position, void** _Fn_Out_ reserved);
 status print_array_element(dynamicarray_ptr_t _Fn_In_ dynamic_array, void (*print_func)(void* print_data));
 
 void print_back_call(void* print_data)
@@ -38,6 +38,7 @@ int main()
 	int v4 = 4;
 	int v5 = 5;
 	int ve = 100;
+	int** re;
 	
 	dynamicarray_ptr_t array = initialize_dynamic_array(5);
 //	insert_array_element(array, 0, &v1);
@@ -47,7 +48,10 @@ int main()
 //	insert_array_element(array, 0, &v5);
 //	insert_array_element(array, 0, &ve);
 //	insert_array_element(array, 0, &v1);
-	
+	insert_array_element(array, 0, &v1);
+	insert_array_element(array, 4, &v2);
+	insert_array_element(array, 2, &v3);
+	delete_array_element(array, 1, (void**)&re);
 	print_array_element(array, print_back_call);
 	
 	return 0;
@@ -87,7 +91,12 @@ status insert_array_element(dynamicarray_ptr_t _Fn_In_ dynamic_array, int _Fn_In
 		return -1;
 	}
 	
-	int index; 
+	if(insert_position > dynamic_array->array_size)
+	{
+		insert_position = dynamic_array->array_size;
+	}
+	
+	int index;
 	
 	if(dynamic_array->array_size == dynamic_array->array_capacity)
 	{
@@ -133,9 +142,14 @@ status print_array_element(dynamicarray_ptr_t _Fn_In_ dynamic_array, void (*prin
 	return 1;
 }
 
-status delete_array_element(dynamicarray_ptr_t _Fn_In_ dynamic_array, int _Fn_In_ insert_position, void** _Fn_Out_ reserved)
+status delete_array_element(dynamicarray_ptr_t _Fn_In_ dynamic_array, int _Fn_In_ delete_position, void** _Fn_Out_ reserved)
 {
-	if(dynamic_array == NULL || insert_position < 0)
+	if(dynamic_array == NULL || delete_position < 0)
+	{
+		return -1;
+	}
+	
+	if(delete_position >= dynamic_array->array_size)
 	{
 		return -1;
 	}
@@ -144,12 +158,13 @@ status delete_array_element(dynamicarray_ptr_t _Fn_In_ dynamic_array, int _Fn_In
 	
 	if(reserved != NULL)
 	{
-		*reserved = dynamic_array->dynamic_array[insert_position];
+		*reserved = dynamic_array->dynamic_array[delete_position];
 	}
 	
 	for(index = delete_position; index < dynamic_array->array_size; index++)
 	{
 		dynamic_array->dynamic_array[index] = dynamic_array->dynamic_array[index + 1];
 	}
+	dynamic_array->array_size--; 
 	return 0;
 }
