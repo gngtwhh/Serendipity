@@ -66,7 +66,6 @@ static status sm4_gengrate_subkey(sm4_encipher *sm4) {
     uint32_t *rk = sm4->rk;
     uint32_t *key = (uint32_t *) sm4->key;
     uint32_t mk[4];
-
     /* xor the key with the FK */
     for (int i = 0; i < 4; i++)
         mk[i] = key[i] ^ SM4_FK[i];
@@ -131,23 +130,35 @@ status sm4_encrypt(sm4_encipher *sm4, const byte *in_data, int in_data_len, byte
     /* check the parameters */
     ASSERT(sm4 != NULL && in_data != NULL && out_data != NULL && out_data_len != NULL, error);
     ASSERT(sm4->is_key_set, error);
-    /* calculate the length of the data after padding */
+
+    /* nessary variables */
+    uint32_t *pad_data = NULL;
+    int block_num;
+
+    /* calculate the length of the data after padding, and set the block number */
     int pad_len = pkcs7_pad_len(in_data_len, SM4_BLOCK_SIZE);
     *out_data_len = in_data_len + pad_len;
+    block_num = *out_data_len / SM4_BLOCK_SIZE;
+
     /* allocate the memory for the padded data */
-    byte *pad_data = pkcs7_pad(in_data, in_data_len, SM4_BLOCK_SIZE);
+    pad_data = (uint32_t *) pkcs7_pad(in_data, in_data_len, SM4_BLOCK_SIZE);
     if (pad_data == NULL)
         return failed; // memory allocation failed
 
-    /* encrypt the data */
+    /*uint32_t *pad_data_uint32 = (uint32_t *) pad_data;
+    for (int i = 0; i < block_num; i++) {
+        pad_data_uint32[i] = BYTES_TO_UINT32(pad_data + i * SM4_BLOCK_SIZE);
+    }*/
+
     /* encrypt the data block by block */
-    for (int i = 0; i < *out_data_len; i += SM4_BLOCK_SIZE) {
+    for (int block_idx = 0; block_idx < block_num; block_idx++) {
         /* step 1: 32 rounds of encryption */
-        sm4_crypt_block_round(sm4, (uint32_t * )(pad_data + i),
-                              (uint32_t * )(out_data + i), SM4_ENCRYPT);
+        sm4_crypt_block_round(sm4, pad_data + block_idx,
+                              (uint32_t *) out_data + block_idx, SM4_ENCRYPT);
         /* step 2: reverse the data */
-        sm4_crypt_block_reverse((uint32_t * )(out_data + i));
+        sm4_crypt_block_reverse((uint32_t *) (out_data + block_idx));
     }
+
     /* free the memory */
     free(pad_data);
     return true;
@@ -178,11 +189,22 @@ status sm4_crypt_block_round(sm4_encipher *sm4, const uint32_t *in_data, uint32_
         i += step;
         x[3] ^= SM4_ROUND_T(x[0] ^ x[1] ^ x[2] ^ rk[i]);
         i += step;
-
     } while (mode == SM4_ENCRYPT ? (i < SM4_ROUND) : (i >= 0));
     /* copy the data */
     memcpy(out_data, x, SM4_BLOCK_SIZE);
     return true;
 }
 
-status sm4_crypt_block_reverse(uint32_t *data);
+status sm4_crypt_block_reverse(uint32_t *data) {
+    /* check the parameters */
+    ASSERT(data != NULL, error);
+    /* reverse the data */
+    uint32_t tmp;
+    tmp = data[0];
+    data[0] = data[3];
+    data[3] = tmp;
+    tmp = data[1];
+    data[1] = data[2];
+    data[2] = tmp;
+    return true;
+}
