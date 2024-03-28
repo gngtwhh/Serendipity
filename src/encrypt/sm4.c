@@ -134,7 +134,7 @@ status sm4_init(sm4_encipher *sm4, const byte *key) {
  * @param {int} *out_data_len
  * @return {status}
  */
-status sm4_encrypt(sm4_encipher *sm4, const byte *in_data, int in_data_len, byte *out_data) {
+status sm4_crypt(sm4_encipher *sm4, const byte *in_data, int in_data_len, byte *out_data,int mode) {
     /* check the parameters */
     ASSERT(sm4 != NULL && in_data != NULL && out_data != NULL, error);
     ASSERT(sm4->is_key_set, error);
@@ -150,15 +150,12 @@ status sm4_encrypt(sm4_encipher *sm4, const byte *in_data, int in_data_len, byte
         for (int j = 0; j < 4; ++j)
             BE_BYTES_TO_UINT32(block_data[j], in_data + i + j * 4);
         sm4_crypt_block_round(sm4, block_data,
-                              (uint32_t *) (out_data + i), SM4_ENCRYPT);
+                              (uint32_t *) (out_data + i), mode);
         sm4_crypt_block_reverse((uint32_t *) (out_data + i));
     }
 
     return true;
 }
-
-status sm4_decrypt(sm4_encipher *sm4, const byte *in_data, int in_data_len, byte *out_data,
-                   int *out_data_len);
 
 status sm4_crypt_block_round(sm4_encipher *sm4, const uint32_t *in_data, uint32_t *out_data,
                              int mode) {
