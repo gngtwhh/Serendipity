@@ -10,6 +10,7 @@
 
 #include <encrypt/sm4.h>
 #include <encrypt/pkcspad.h>
+#include <misc/endian.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -53,7 +54,7 @@ status free_sm4(sm4_encipher *sm4) {
 }
 
 /**
- * @Funticon name: sm4_gengrate_subkey
+ * @Funticon name: sm4_generate_subkey
  * @description: generate the subkey of the sm4_encipher
  * @Author: WAHAHA
  * @Date: 2024-3-15 17:59:46
@@ -61,18 +62,26 @@ status free_sm4(sm4_encipher *sm4) {
  * @param {sm4_encipher} *sm4
  * @return {status}
  */
-static status sm4_gengrate_subkey(sm4_encipher *sm4) {
+static status sm4_generate_subkey(sm4_encipher *sm4) {
     ASSERT(sm4 != NULL, error);
     uint32_t *rk = sm4->rk;
-    uint32_t *key = (uint32_t *) sm4->key;
+//    uint32_t *key = (uint32_t *) sm4->key;
     uint32_t mk[4];
-    /* xor the key with the FK */
-    for (int i = 0; i < 4; i++)
-        mk[i] = key[i] ^ SM4_FK[i];
 
     /*
-     * generate the subkey,
-     * 4 round keys are processed per round cycle to improve efficiency.
+     * copy the key
+     * @Note: the key is stored in the big-endian format
+     */
+    for (int i = 0, j = 0; i < 16; i += 4, j++)
+        BE_BYTES_TO_UINT32(mk[j], sm4->key + i);
+
+    /* xor the key with the FK */
+    for (int i = 0; i < 4; ++i)
+        mk[i] ^= SM4_FK[i];
+
+    /*
+     * generate the subkey
+     * @Note: 4 round keys are processed per round cycle to improve efficiency.
      */
     uint32_t i = 0;
     do {
@@ -110,7 +119,7 @@ status sm4_init(sm4_encipher *sm4, const byte *key) {
     memcpy(sm4->key, key, SM4_KEY_SIZE);
     sm4->is_key_set = true;
     /* generate the subkey,and return the status */
-    return sm4_gengrate_subkey(sm4);
+    return sm4_generate_subkey(sm4);
 }
 
 /**
@@ -125,42 +134,26 @@ status sm4_init(sm4_encipher *sm4, const byte *key) {
  * @param {int} *out_data_len
  * @return {status}
  */
-status sm4_encrypt(sm4_encipher *sm4, const byte *in_data, int in_data_len, byte *out_data,
-                   int *out_data_len) {
+status sm4_encrypt(sm4_encipher *sm4, const byte *in_data, int in_data_len, byte *out_data) {
     /* check the parameters */
-    ASSERT(sm4 != NULL && in_data != NULL && out_data != NULL && out_data_len != NULL, error);
+    ASSERT(sm4 != NULL && in_data != NULL && out_data != NULL, error);
     ASSERT(sm4->is_key_set, error);
+    // the length of the data should be a multiple of 16
+    // caller should make sure the length of the data is a multiple of 16
+    ASSERT(in_data_len % SM4_BLOCK_SIZE == 0, error);
 
-    /* nessary variables */
-    uint32_t *pad_data = NULL;
-    int block_num;
+    /* necessary variables */
+    uint32_t block_data[4];
 
-    /* calculate the length of the data after padding, and set the block number */
-    int pad_len = pkcs7_pad_len(in_data_len, SM4_BLOCK_SIZE);
-    *out_data_len = in_data_len + pad_len;
-    block_num = *out_data_len / SM4_BLOCK_SIZE;
-
-    /* allocate the memory for the padded data */
-    pad_data = (uint32_t *) pkcs7_pad(in_data, in_data_len, SM4_BLOCK_SIZE);
-    if (pad_data == NULL)
-        return failed; // memory allocation failed
-
-    /*uint32_t *pad_data_uint32 = (uint32_t *) pad_data;
-    for (int i = 0; i < block_num; i++) {
-        pad_data_uint32[i] = BYTES_TO_UINT32(pad_data + i * SM4_BLOCK_SIZE);
-    }*/
-
-    /* encrypt the data block by block */
-    for (int block_idx = 0; block_idx < block_num; block_idx++) {
-        /* step 1: 32 rounds of encryption */
-        sm4_crypt_block_round(sm4, pad_data + block_idx,
-                              (uint32_t *) out_data + block_idx, SM4_ENCRYPT);
-        /* step 2: reverse the data */
-        sm4_crypt_block_reverse((uint32_t *) (out_data + block_idx));
+    for (int i = 0; i < in_data_len; i += 16) {
+        /* copy the data */
+        for (int j = 0; j < 4; ++j)
+            BE_BYTES_TO_UINT32(block_data[j], in_data + i + j * 4);
+        sm4_crypt_block_round(sm4, block_data,
+                              (uint32_t *) (out_data + i), SM4_ENCRYPT);
+        sm4_crypt_block_reverse((uint32_t *) (out_data + i));
     }
 
-    /* free the memory */
-    free(pad_data);
     return true;
 }
 
@@ -172,14 +165,21 @@ status sm4_crypt_block_round(sm4_encipher *sm4, const uint32_t *in_data, uint32_
     /* check the parameters */
     ASSERT(sm4 != NULL && in_data != NULL && out_data != NULL, error);
     ASSERT(mode == SM4_ENCRYPT || mode == SM4_DECRYPT, error);
-    /* nessary variables */
+    /* necessary variables */
     uint32_t *rk = sm4->rk;
     uint32_t x[SM4_BLOCK_SIZE / sizeof(uint32_t)];
     int i, step = mode;
-    i = mode == SM4_ENCRYPT ? 0 : SM4_ROUND - 1;
-    /* copy the data */
-    memcpy(x, in_data, SM4_BLOCK_SIZE);
+    /*
+     * copy the data
+     * @Note: the data is stored in the big-endian format
+     */
+//    for (i = 0; i < 4; ++i)
+//        BE_BYTES_TO_UINT32(x[i], in_data + i);
+    for (i = 0; i < 4; ++i)
+        x[i] = in_data[i];
+
     /* 32 rounds of encryption */
+    i = mode == SM4_ENCRYPT ? 0 : SM4_ROUND - 1;
     do {
         x[0] ^= SM4_ROUND_T(x[1] ^ x[2] ^ x[3] ^ rk[i]);
         i += step;
@@ -190,8 +190,13 @@ status sm4_crypt_block_round(sm4_encipher *sm4, const uint32_t *in_data, uint32_
         x[3] ^= SM4_ROUND_T(x[0] ^ x[1] ^ x[2] ^ rk[i]);
         i += step;
     } while (mode == SM4_ENCRYPT ? (i < SM4_ROUND) : (i >= 0));
-    /* copy the data */
-    memcpy(out_data, x, SM4_BLOCK_SIZE);
+    /*
+     * copy the data
+     * @Note: the data is stored in the big-endian format
+     */
+    for (i = 0; i < 4; ++i)
+        BE_UINT32_TO_BYTES((byte *) out_data + i*4, x[i]);
+
     return true;
 }
 

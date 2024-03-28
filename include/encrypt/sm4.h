@@ -36,7 +36,7 @@ static const uint32_t SM4_CK[32] = {
         0xa0a7aeb5, 0xbcc3cad1, 0xd8dfe6ed, 0xf4fb0209,
         0x10171e25, 0x2c333a41, 0x484f565d, 0x646b7279
 };
-static const uint8_t SM4_SBOX[256] = {
+static const byte SM4_SBOX[256] = {
         0xD6, 0x90, 0xE9, 0xFE, 0xCC, 0xE1, 0x3D, 0xB7, 0x16, 0xB6, 0x14, 0xC2, 0x28, 0xFB, 0x2C,
         0x05,
         0x2B, 0x67, 0x9A, 0x76, 0x2A, 0xBE, 0x04, 0xC3, 0xAA, 0x44, 0x13, 0x26, 0x49, 0x86, 0x06,
@@ -74,10 +74,10 @@ static const uint8_t SM4_SBOX[256] = {
 /* transformation function macros of SM4 */
 /* tau transformation */
 #define SM4_TAU(uint32_b)                                           \
-    ( (SM4_SBOX[SHR_NBIT((uint32_b),24) & 0xFF] << 24)              \
-    | (SM4_SBOX[SHR_NBIT((uint32_b),16) & 0xFF] << 16)              \
-    | (SM4_SBOX[SHR_NBIT((uint32_b), 8) & 0xFF] <<  8)              \
-    | (SM4_SBOX[         (uint32_b)     & 0xFF]      )              \
+    ( ((uint32_t)SM4_SBOX[SHR_NBIT((uint32_b),24) & 0xFF] << 24)    \
+    | ((uint32_t)SM4_SBOX[SHR_NBIT((uint32_b),16) & 0xFF] << 16)    \
+    | ((uint32_t)SM4_SBOX[SHR_NBIT((uint32_b), 8) & 0xFF] <<  8)    \
+    | ((uint32_t)SM4_SBOX[         (uint32_b)     & 0xFF]      )    \
     )
 
 /* L' transformation of keygen */
@@ -119,14 +119,13 @@ status free_sm4(sm4_encipher *sm4);
 
 /* SM4 functions */
 /* generate the subkey of the sm4_encipher */
-static status sm4_gengrate_subkey(sm4_encipher *sm4);
+static status sm4_generate_subkey(sm4_encipher *sm4);
 
 /* initialize the sm4_encipher object with a 128-bit key */
 status sm4_init(sm4_encipher *sm4, const byte *key);
 
 /* encrypt and decrypt the data */
-status sm4_encrypt(sm4_encipher *sm4, const byte *in_data, int in_data_len, byte *out_data,
-                   int *out_data_len);
+status sm4_encrypt(sm4_encipher *sm4, const byte *in_data, int in_data_len, byte *out_data);
 
 status sm4_decrypt(sm4_encipher *sm4, const byte *in_data, int in_data_len, byte *out_data,
                    int *out_data_len);
