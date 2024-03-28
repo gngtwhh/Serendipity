@@ -123,15 +123,16 @@ status sm4_init(sm4_encipher *sm4, const byte *key) {
 }
 
 /**
- * @Funticon name: sm4_encrypt
- * @description: encrypt the data with the sm4_encipher object
+ * @Funticon name: sm4_crypt
+ * @description: encrypt and decrypt the data
  * @Author: WAHAHA
  * @Date: 2024-3-19 1:55:28
+ * @Note: The caller should make sure the length of the data is a multiple of 16
  * @param {sm4_encipher} *sm4
  * @param {byte} *in_data
  * @param {int} data_len
  * @param {byte} *out_data
- * @param {int} *out_data_len
+ * @param {int} mode
  * @return {status}
  */
 status sm4_crypt(sm4_encipher *sm4, const byte *in_data, int in_data_len, byte *out_data,int mode) {
