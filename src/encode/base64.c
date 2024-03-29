@@ -35,6 +35,16 @@ base64_encoder *new_base64(const byte *b64_table) {
     base64_encoder *encoder = (base64_encoder *) malloc(sizeof(base64_encoder));
     if (encoder == NULL)
         return NULL;
+    /* alloc the b64_table and reverse_table */
+    encoder->b64_table = (byte *) malloc(64 * sizeof(byte));
+    encoder->reverse_table = (byte *) malloc(256 * sizeof(byte));
+    // the parameter for free() is allowed to be NULL
+    if (encoder->b64_table == NULL || encoder->reverse_table == NULL) {
+        free(encoder->b64_table);
+        free(encoder->reverse_table);
+        free(encoder);
+        return NULL;
+    }
 
     /* set the b64_table */
     if (b64_table == NULL)
@@ -59,6 +69,8 @@ base64_encoder *new_base64(const byte *b64_table) {
  */
 status free_base64(base64_encoder *encoder) {
     ASSERT(encoder != NULL, error);
+    free(encoder->b64_table);
+    free(encoder->reverse_table);
     free(encoder);
     return true;
 }
@@ -75,7 +87,7 @@ status free_base64(base64_encoder *encoder) {
  * @param {byte} *reverse_table
  * @return {status}
  */
-status generate_reverse_table(const byte *b64_table, byte *reverse_table) {
+static status generate_reverse_table(const byte *b64_table, byte *reverse_table) {
     /**
      * Fill with 0xff, so if 0xff is accessed later,
      * it means that this character is not in the base64 table,
@@ -129,11 +141,15 @@ status base64_reset(base64_encoder *encoder) {
  * @description: encode the input to base64
  * @Author: WAHAHA
  * @Date: 2024-03-04 12:19:32
- * @Note: out_len can be NULL,length of output will be stored in encoder->output_len
+ * @Note: length of output will be stored in encoder->output_len
+ * @param {base64_encoder} *encoder
+ * @param {byte} *input
+ * @param {int} in_len
+ * @param {byte} *output
  * @return {status}
  */
 status base64_encode(base64_encoder *encoder, const byte *input, int in_len,
-                     byte *output, int *out_len) {
+                     byte *output) {
     /* check the parameters */
     ASSERT(input != NULL, error);
     ASSERT(in_len > 0, error);
@@ -177,10 +193,6 @@ status base64_encode(base64_encoder *encoder, const byte *input, int in_len,
         }
     }
 
-    /* check out_len and assign */
-    if (out_len != NULL)
-        *out_len = encoder->output_len;
-
     return true;
 }
 
@@ -189,11 +201,15 @@ status base64_encode(base64_encoder *encoder, const byte *input, int in_len,
  * @description: decode the input from base64
  * @Author: WAHAHA
  * @Date: 2024-03-04 12:22:21
- * @Note: out_len can be NULL,length of output will be stored in encoder->output_len
+ * @Note: length of output will be stored in encoder->output_len
+ * @param {base64_encoder} *encoder
+ * @param {byte} *input
+ * @param {int} in_len
+ * @param {byte} *output
  * @return {status}
  */
 status base64_decode(base64_encoder *encoder, const byte *input, int in_len,
-                     byte *output, int *out_len) {
+                     byte *output) {
     /* check the parameters */
     ASSERT(input != NULL, error);
     ASSERT(in_len > 0, error);
@@ -258,10 +274,6 @@ status base64_decode(base64_encoder *encoder, const byte *input, int in_len,
         output[j++] = (re_table[input[i]] << 2) | (re_table[input[i + 1]] >> 4);
     }
     output[j] = '\0';
-
-    /* check out_len and assign */
-    if (out_len != NULL)
-        *out_len = encoder->output_len;
 
     return true;
 }
