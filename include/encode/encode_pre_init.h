@@ -15,8 +15,8 @@
  * @date 2024
  */
 
-#ifndef _ENCODE_PRE_INIT_H_
-#define _ENCODE_PRE_INIT_H_
+#ifndef ENCODE_PRE_INIT_H
+#define ENCODE_PRE_INIT_H
 
 #include <stdio.h>
 #include <stdint.h>
@@ -36,16 +36,16 @@ typedef uint8_t byte;
 typedef int status;
 #define true 1 // correct execution
 #define false 0 // The data to be processed or initialized is incorrect
-#define error -1 // user's usage error
-#define failed -2 // system's failure
+#define error (-1) // user's usage error
+#define failed (-2) // system's failure
 
 #endif
 
 /* define assert macro */
 #ifndef ASSERT
-#define ASSERT(expr, code)                                       \
+#define ASSERT(expr, code)                                      \
 if(!(expr)) {                                                   \
-    printf("[%s]:%s:%d is failed! error code: %d\r\n", \
+    printf("[%s]:%s:%d is failed! error code: %d\r\n",          \
         __FILE__,__FUNCTION__,__LINE__,code);                   \
     return code;                                                \
 }
@@ -56,4 +56,4 @@ if(!(expr)) {                                                   \
 //     ((type *)((char *)(ptr) - (unsigned long)(&((type *)0)->member)))
 // #endif
 
-#endif
+#endif // ENCODE_PRE_INIT_H
