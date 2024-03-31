@@ -12,38 +12,43 @@
 #include <stdio.h>
 #include <string.h>
 
- /**
-  * @Funticon name: hex_to_bytes
-  * @description: transform hex string to bytes
-  * @Author: WAHAHA
-  * @Date: 2024-03-04 12:25:50
-  * @Note: None
-  * @return {status}
-  */
-status hex_to_bytes(const char *hex, size_t in_len,
-    byte *bytes, size_t *out_len)
-{
+/**
+ * @Funticon name: hex_to_bytes
+ * @description: transform hex string to bytes
+ * @Author: WAHAHA
+ * @Date: 2024-03-04 12:25:50
+ * @Note: The function will process until the first error occurs.
+ * @Note: return 1: all hex characters are correct.
+ * @Note: return 0: part of hex characters are incorrect.
+ * @Note: return -1: parameter error.
+ * @return {status}
+ */
+status hex_to_bytes(const char *hex, size_t in_len, byte *bytes, size_t *out_len) {
     ASSERT(hex != NULL && bytes != NULL && out_len != NULL, error);
     ASSERT(in_len % 2 == 0, error);
 
-    memset(bytes, 0, in_len / 2 + 1);
-    *out_len = in_len / 2;
-    for (size_t i = 0;i < in_len;++i) {
+    /* init the buffer */
+    memset(bytes, 0, in_len / 2);
+
+    for (size_t i = 0; i < in_len; i++) {
         char c = hex[i];
-        int value = 0;
-        if (c >= '0' && c <= '9')
+        byte value;
+        if (c >= '0' && c <= '9') {
             value = c - '0';
-        else if (c >= 'a' && c <= 'f')
+        } else if (c >= 'a' && c <= 'f') {
             value = c - 'a' + 10;
-        else if (c >= 'A' && c <= 'F')
+        } else if (c >= 'A' && c <= 'F') {
             value = c - 'A' + 10;
-        else {
+        } else {
             printf("hex_to_bytes error: incorrect hex character\r\n");
+            bytes[i / 2] = 0; // reset the value
+            *out_len = (i - (i & 1)) / 2; // set the correct length
             return false;
         }
+        /* shift the value to the correct position */
         bytes[i / 2] += value << (4 * (1 - (i & 1)));
     }
-    bytes[*out_len] = '\0';
+    *out_len = in_len / 2; // set the correct length
     return true;
 }
 
@@ -55,9 +60,7 @@ status hex_to_bytes(const char *hex, size_t in_len,
  * @Note: None
  * @return {status}
  */
-status bytes_to_hex(const byte *bytes, size_t in_len,
-    char *hex, size_t *out_len)
-{
+status bytes_to_hex(const byte *bytes, size_t in_len, char *hex, size_t *out_len) {
     ASSERT(bytes != NULL && hex != NULL && out_len != NULL, error);
     ASSERT(in_len > 0, error);
 
@@ -65,7 +68,7 @@ status bytes_to_hex(const byte *bytes, size_t in_len,
 
     *out_len = in_len * 2;
     size_t out_idx = 0;
-    for (size_t i = 0;i < in_len;++i) {
+    for (size_t i = 0; i < in_len; ++i) {
         hex[out_idx++] = hex_table[bytes[i] >> 4];
         hex[out_idx++] = hex_table[bytes[i] & 0x0f];
     }

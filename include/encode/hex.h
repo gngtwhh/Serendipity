@@ -13,9 +13,8 @@
 #include <encode/encode_pre_init.h>
 
 /* hex transform */
-status hex_to_bytes(const char *hex, size_t in_len,
-    byte *bytes, size_t *out_len);
-status bytes_to_hex(const byte *bytes, size_t in_len,
-    char *hex, size_t *out_len);
+status hex_to_bytes(const char *hex, size_t in_len, byte *bytes, size_t *out_len);
+
+status bytes_to_hex(const byte *bytes, size_t in_len, char *hex, size_t *out_len);
 
 #endif // _ENCODE_HEX_H_
