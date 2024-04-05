@@ -7,8 +7,8 @@
  */
 
 
-#ifndef _ENCRIPT_TEA_
-#define _ENCRIPT_TEA_
+#ifndef ENCRYPT_TEA
+#define ENCRYPT_TEA
 
 /* pre-initialization of encrypt */
 #include <encrypt/encrypt_pre_init.h>
@@ -18,23 +18,35 @@
 typedef struct tea_encipher {
     uint32_t delta;
     int rounds; // not available for XXTEA
-    int n; // only available for XXTEA
+    int n; // the count of blocks
     uint32_t key[4];
 } tea_encipher;
 
-tea_encipher* new_tea(uint32_t delta, uint32_t key[4], int rounds);
-status free_tea(tea_encipher* tea);
+tea_encipher *new_tea(uint32_t delta, const uint32_t key[4], int rounds);
 
-/* common TEA encrytion */
-status tea_encrypt(tea_encipher* tea, uint32_t* plain, uint32_t* cipher);
-status tea_decrypt(tea_encipher* tea, uint32_t* cipher, uint32_t* plain);
+status free_tea(tea_encipher *tea);
 
-/* XTEA encrytion */
-status xtea_encrypt(tea_encipher* tea, uint32_t* plain, uint32_t* cipher);
-status xtea_decrypt(tea_encipher* tea, uint32_t* cipher, uint32_t* plain);
+/* common TEA encryption */
+status tea_encrypt(tea_encipher *tea, const uint32_t *plain, uint32_t *cipher);
 
-/* XXTEA encrytion */
-status xxtea_encrypt(tea_encipher* tea, uint32_t* plain, uint32_t* cipher);
-status xxtea_decrypt(tea_encipher* tea, uint32_t* cipher, uint32_t* plain);
+status tea_decrypt(tea_encipher *tea, const uint32_t *cipher, uint32_t *plain);
 
-#endif // _ENCRIPT_TEA_
+static status tea_block_encrypt(tea_encipher *tea, const uint32_t *plain, uint32_t *cipher);
+
+static status tea_block_decrypt(tea_encipher *tea, const uint32_t *cipher, uint32_t *plain);
+
+/* XTEA encryption */
+status xtea_encrypt(tea_encipher *tea, const uint32_t *plain, uint32_t *cipher);
+
+status xtea_decrypt(tea_encipher *tea, const uint32_t *cipher, uint32_t *plain);
+
+static status xtea_block_encrypt(tea_encipher *tea, const uint32_t *plain, uint32_t *cipher);
+
+static status xtea_block_decrypt(tea_encipher *tea, const uint32_t *cipher, uint32_t *plain);
+
+/* XXTEA encryption */
+status xxtea_encrypt(tea_encipher *tea, const uint32_t *plain, uint32_t *cipher);
+
+status xxtea_decrypt(tea_encipher *tea, const uint32_t *cipher, uint32_t *plain);
+
+#endif // ENCRYPT_TEA

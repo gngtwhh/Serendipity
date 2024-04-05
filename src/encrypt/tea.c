@@ -17,27 +17,26 @@
 #define XXTEA_MX (((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) \
     ^ ((sum ^ y) + (tea->key[(p & 3) ^ e] ^ z)))
 
- /* TEA encipher */
- /**
-  * @Funticon name: new_tea
-  * @description: new a tea_encipher object
-  * @Author: WAHAHA
-  * @Date: 2024-03-04 12:00:44
-  * @Note: the returned object pointer should be considered to have been properly initialized
-  * @param {uint32_t} delta
-  * @param {uint32_t} key
-  * @param {int} rounds
-  * @return {tea_encipher *}
-  */
-tea_encipher *new_tea(uint32_t delta, uint32_t key[4], int rounds)
-{
+/* TEA encipher */
+/**
+ * @Funticon name: new_tea
+ * @description: new a tea_encipher object
+ * @Author: WAHAHA
+ * @Date: 2024-03-04 12:00:44
+ * @Note: the returned object pointer should be considered to have been properly initialized
+ * @param {uint32_t} delta
+ * @param {uint32_t} key
+ * @param {int} rounds
+ * @return {tea_encipher *}
+ */
+tea_encipher *new_tea(uint32_t delta, const uint32_t key[4], int rounds) {
     /* check the key and rounds */
     if (rounds < 0 || key == NULL) {
         printf("new_tea error: Invalid key or rounds\n");
         return NULL;
     }
     /* create a tea_encipher */
-    tea_encipher *tea = (tea_encipher *)malloc(sizeof(tea_encipher));
+    tea_encipher *tea = (tea_encipher *) malloc(sizeof(tea_encipher));
     if (tea == NULL)
         return NULL;
     tea->delta = (delta == 0) ? DELTA : delta;
@@ -57,14 +56,13 @@ tea_encipher *new_tea(uint32_t delta, uint32_t key[4], int rounds)
  * @param {tea_encipher} *tea
  * @return {status}
  */
-status free_tea(tea_encipher *tea)
-{
+status free_tea(tea_encipher *tea) {
     ASSERT(tea != NULL, error);
     free(tea);
     return true;
 }
 
-/* TEA encrytion interface and subroutines */
+/* TEA encryption interface and subroutines */
 /**
  * @Funticon name: tea_block_encrypt
  * @description: encrypt a block of plain text(2 uint32_t) using TEA algorithm
@@ -76,8 +74,7 @@ status free_tea(tea_encipher *tea)
  * @param {uint32_t} *cipher
  * @return {status}
  */
-status tea_block_encrypt(tea_encipher *tea, uint32_t *plain, uint32_t *cipher)
-{
+static status tea_block_encrypt(tea_encipher *tea, const uint32_t *plain, uint32_t *cipher) {
     ASSERT(tea != NULL && plain != NULL && cipher != NULL, error);
     uint32_t v0 = plain[0], v1 = plain[1], sum = 0;
     for (int i = 0; i < tea->rounds; i++) {
@@ -101,8 +98,7 @@ status tea_block_encrypt(tea_encipher *tea, uint32_t *plain, uint32_t *cipher)
  * @param {uint32_t} *plain
  * @return {status}
  */
-status tea_block_decrypt(tea_encipher *tea, uint32_t *cipher, uint32_t *plain)
-{
+static status tea_block_decrypt(tea_encipher *tea, const uint32_t *cipher, uint32_t *plain) {
     ASSERT(tea != NULL && plain != NULL && cipher != NULL, error);
     uint32_t v0 = cipher[0], v1 = cipher[1], sum = tea->delta * tea->rounds;
     for (int i = 0; i < tea->rounds; i++) {
@@ -117,17 +113,16 @@ status tea_block_decrypt(tea_encipher *tea, uint32_t *cipher, uint32_t *plain)
 
 /**
  * @Funticon name: tea_encrypt
- * @description: interface of TEA encrytion, encrypt the plain text using TEA algorithm
+ * @description: interface of TEA encryption, encrypt the plain text using TEA algorithm
  * @Author: WAHAHA
  * @Date: 2024-03-04 12:06:48
- * @Note: the plain whill be checked if it is valid
+ * @Note: the plain will be checked if it is valid
  * @param {tea_encipher} *tea
  * @param {uint32_t} *plain
  * @param {uint32_t} *cipher
  * @return {status}
  */
-status tea_encrypt(tea_encipher *tea, uint32_t *plain, uint32_t *cipher)
-{
+status tea_encrypt(tea_encipher *tea,const uint32_t *plain, uint32_t *cipher) {
     /* check the input */
     ASSERT(tea != NULL && plain != NULL && cipher != NULL, error);
     /* check if the plain text is valid */
@@ -142,17 +137,16 @@ status tea_encrypt(tea_encipher *tea, uint32_t *plain, uint32_t *cipher)
 
 /**
  * @Funticon name: tea_decrypt
- * @description: interface of TEA decrytion, decrypt the cipher text using TEA algorithm
+ * @description: interface of TEA decryption, decrypt the cipher text using TEA algorithm
  * @Author: WAHAHA
  * @Date: 2024-03-04 12:09:02
- * @Note: the cipher whill be checked if it is valid
+ * @Note: the cipher will be checked if it is valid
  * @param {tea_encipher} *tea
  * @param {uint32_t} *cipher
  * @param {uint32_t} *plain
  * @return {status}
  */
-status tea_decrypt(tea_encipher *tea, uint32_t *cipher, uint32_t *plain)
-{
+status tea_decrypt(tea_encipher *tea,const uint32_t *cipher, uint32_t *plain) {
     /* check the input */
     ASSERT(tea != NULL && plain != NULL && cipher != NULL, error);
     /* check if the cipher text is valid */
@@ -166,7 +160,7 @@ status tea_decrypt(tea_encipher *tea, uint32_t *cipher, uint32_t *plain)
 }
 
 
-/* XTEA encrytion interface and subroutines */
+/* XTEA encryption interface and subroutines */
 /**
  * @Funticon name: xtea_block_encrypt
  * @description: encrypt a block of plain text(2 uint32_t) using XTEA algorithm
@@ -178,8 +172,7 @@ status tea_decrypt(tea_encipher *tea, uint32_t *cipher, uint32_t *plain)
  * @param {uint32_t} *cipher
  * @return {status}
  */
-status xtea_block_encrypt(tea_encipher *tea, uint32_t *plain, uint32_t *cipher)
-{
+static status xtea_block_encrypt(tea_encipher *tea, const uint32_t *plain, uint32_t *cipher) {
     ASSERT(tea != NULL && plain != NULL && cipher != NULL, error);
     uint32_t v0 = plain[0], v1 = plain[1], sum = 0;
     for (int i = 0; i < tea->rounds; i++) {
@@ -203,8 +196,7 @@ status xtea_block_encrypt(tea_encipher *tea, uint32_t *plain, uint32_t *cipher)
  * @param {uint32_t} *plain
  * @return {status}
  */
-status xtea_block_decrypt(tea_encipher *tea, uint32_t *cipher, uint32_t *plain)
-{
+static status xtea_block_decrypt(tea_encipher *tea, const uint32_t *cipher, uint32_t *plain) {
     ASSERT(tea != NULL && plain != NULL && cipher != NULL, error);
     uint32_t v0 = cipher[0], v1 = cipher[1], sum = tea->delta * tea->rounds;
     for (int i = 0; i < tea->rounds; i++) {
@@ -219,17 +211,16 @@ status xtea_block_decrypt(tea_encipher *tea, uint32_t *cipher, uint32_t *plain)
 
 /**
  * @Funticon name: xtea_encrypt
- * @description: interface of XTEA encrytion, encrypt the plain text using XTEA algorithm
+ * @description: interface of XTEA encryption, encrypt the plain text using XTEA algorithm
  * @Author: WAHAHA
  * @Date: 2024-03-04 12:11:23
- * @Note: the plain whill be checked if it is valid
+ * @Note: the plain will be checked if it is valid
  * @param {tea_encipher} *tea
  * @param {uint32_t} *plain
  * @param {uint32_t} *cipher
  * @return {status}
  */
-status xtea_encrypt(tea_encipher *tea, uint32_t *plain, uint32_t *cipher)
-{
+status xtea_encrypt(tea_encipher *tea,const uint32_t *plain, uint32_t *cipher) {
     /* check the input */
     ASSERT(tea != NULL && plain != NULL && cipher != NULL, error);
     /* check if the plain text is valid */
@@ -244,17 +235,16 @@ status xtea_encrypt(tea_encipher *tea, uint32_t *plain, uint32_t *cipher)
 
 /**
  * @Funticon name: xtea_decrypt
- * @description: interface of XTEA decrytion, decrypt the cipher text using XTEA algorithm
+ * @description: interface of XTEA decryption, decrypt the cipher text using XTEA algorithm
  * @Author: WAHAHA
  * @Date: 2024-03-04 12:11:54
- * @Note: the cipher whill be checked if it is valid
+ * @Note: the cipher will be checked if it is valid
  * @param {tea_encipher} *tea
  * @param {uint32_t} *cipher
  * @param {uint32_t} *plain
  * @return {status}
  */
-status xtea_decrypt(tea_encipher *tea, uint32_t *cipher, uint32_t *plain)
-{
+status xtea_decrypt(tea_encipher *tea,const uint32_t *cipher, uint32_t *plain) {
     /* check the input */
     ASSERT(tea != NULL && plain != NULL && cipher != NULL, error);
     /* check if the cipher text is valid */
@@ -269,7 +259,7 @@ status xtea_decrypt(tea_encipher *tea, uint32_t *cipher, uint32_t *plain)
 
 /**
  * @Funticon name: xxtea_encrypt
- * @description: interface of XXTEA encrytion, encrypt the plain text using XXTEA algorithm
+ * @description: interface of XXTEA encryption, encrypt the plain text using XXTEA algorithm
  * @Author: WAHAHA
  * @Date: 2024-03-04 12:12:31
  * @Note: None
@@ -278,31 +268,36 @@ status xtea_decrypt(tea_encipher *tea, uint32_t *cipher, uint32_t *plain)
  * @param {uint32_t} *cipher
  * @return {status}
  */
-status xxtea_encrypt(tea_encipher *tea, uint32_t *plain, uint32_t *cipher)
-{
+status xxtea_encrypt(tea_encipher *tea, const uint32_t *plain, uint32_t *cipher) {
     ASSERT(tea != NULL && plain != NULL && cipher != NULL, error);
-    uint32_t e, sum = 0, y = plain[0], z = plain[tea->n - 1];
+    ASSERT(tea->n > 1, error);
+    uint32_t e, sum = 0, y, z = plain[tea->n - 1];
     int rounds = 6 + 52 / (tea->n), p;
 
+    /* copy the plain text */
+    for (int i = 0; i < tea->n; i++)
+        cipher[i] = plain[i];
+
     /* start to encrypt */
-    for (int i = 0;i < rounds;++i) {
+    for (int i = 0; i < rounds; ++i) {
         sum += tea->delta;
         e = (sum >> 2) & 3;
         for (p = 0; p < tea->n - 1; p++) {
-            y = plain[p + 1];
-            plain[p] += XXTEA_MX;
-            z = plain[p];
+            y = cipher[p + 1];
+            cipher[p] += XXTEA_MX;
+            z = cipher[p];
         }
-        y = plain[0];
-        plain[tea->n - 1] += XXTEA_MX;
-        z = plain[tea->n - 1];
+        y = cipher[0];
+        cipher[tea->n - 1] += XXTEA_MX;
+        z = cipher[tea->n - 1];
     }
+
     return true;
 }
 
 /**
  * @Funticon name: xxtea_decrypt
- * @description: interface of XXTEA decrytion, decrypt the cipher text using XXTEA algorithm
+ * @description: interface of XXTEA decryption, decrypt the cipher text using XXTEA algorithm
  * @Author: WAHAHA
  * @Date: 2024-03-04 12:13:09
  * @Note: None
@@ -311,25 +306,30 @@ status xxtea_encrypt(tea_encipher *tea, uint32_t *plain, uint32_t *cipher)
  * @param {uint32_t} *plain
  * @return {status}
  */
-status xxtea_decrypt(tea_encipher *tea, uint32_t *cipher, uint32_t *plain)
-{
+status xxtea_decrypt(tea_encipher *tea, const uint32_t *cipher, uint32_t *plain) {
     ASSERT(tea != NULL && plain != NULL && cipher != NULL, error);
-    uint32_t e, sum, y = cipher[0], z = cipher[tea->n - 1];
+    ASSERT(tea->n > 1, error);
+    uint32_t e, sum, y = cipher[0], z;
     int rounds = 6 + 52 / (tea->n), p;
     sum = rounds * tea->delta;
 
+    /* copy the cipher text */
+    for (int i = 0; i < tea->n; i++)
+        plain[i] = cipher[i];
+
     /* start to decrypt */
-    for (int i = 0; i < rounds; i++) {
+    for (int i = 0; i < tea->n; ++i) {
         e = (sum >> 2) & 3;
         for (p = tea->n - 1; p > 0; p--) {
-            z = cipher[p - 1];
-            cipher[p] -= XXTEA_MX;
-            y = cipher[p];
+            z = plain[p - 1];
+            plain[p] -= XXTEA_MX;
+            y = plain[p];
         }
-        z = cipher[tea->n - 1];
-        cipher[0] -= XXTEA_MX;
-        y = cipher[0];
+        z = plain[tea->n - 1];
+        plain[0] -= XXTEA_MX;
+        y = plain[0];
         sum -= tea->delta;
     }
+
     return true;
 }
