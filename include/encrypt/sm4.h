@@ -3,7 +3,6 @@
  * @description: This is a header file that contains the declaration of the SM4 encryption algorithm.
  * @author: WAHAHA
  * @Date: 2024/3/15 15:48
- * @LastEditTime: 2024/3/15 15:48
  * @FilePath: \Serendipity\include\encrypt\SM4.h
  * @category: encrypt-algorithm
  */

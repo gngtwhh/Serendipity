@@ -20,14 +20,10 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <misc/bitwise_utils.h>
 
 /* declare byte type */
 typedef uint8_t byte;
-
-/* define bit operation macro */
-#define set_bit(x, i) (x |= (1 << i))
-#define clear_bit(x, i) (x &= ~(1 << i))
-#define get_bit(x, i) ((x >> i) & 1)
 
 /* declare extended boolean type */
 #ifndef SERENDIPITY_BOOL

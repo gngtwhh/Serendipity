@@ -8,50 +8,14 @@
  * @category: File category
  */
 
-#ifndef _ENCRYPT_PRE_INIT_
-#define _ENCRYPT_PRE_INIT_
+#ifndef ENCRYPT_PRE_INIT
+#define ENCRYPT_PRE_INIT
 
 #include <stdint.h>
+#include <misc/bitwise_utils.h>
 
 /* declare byte type */
 typedef uint8_t byte;
-
-/* define bit operation macro */
-#define SET_BIT(x, i) (x |= (1 << i))
-#define CLEAR_BIT(x, i) (x &= ~(1 << i))
-#define GET_BIT(x, i) ((x >> i) & 1)
-#define BITS_OF(type) (sizeof(type)<<3)
-
-/**
- * The following macros should be used for unsigned numbers
- * to avoid arithmetic shifts
- */
-
-/* shift left and right */
-#define SHL_NBIT(data, bits) ((data)<<(bits))
-#define SHR_NBIT(data, bits) ((data)>>(bits))
-
-/* cycle shift left and right */
-#define CYCLE_SHL_SIZE_NBIT(data, bits, type)                      \
-    (((data) << (bits)) | ((data) >> (BITS_OF(type) - (bits))))
-#define CYCLE_SHR_SIZE_NBIT(data, bits, type)                      \
-    (((data) >> (bits)) | ((data) << (BITS_OF(type) - (bits))))
-
-/* transform between bytes and uint32_t */
-/*#define BYTES_TO_UINT32(b)                                         \
-    ( (uint32_t)((b)[0]) << 24                                     \
-    | (uint32_t)((b)[1]) << 16                                     \
-    | (uint32_t)((b)[2]) <<  8                                     \
-    | (uint32_t)((b)[3])                                           \
-    )
-
-#define UINT32_TO_BYTES(b, u)                                      \
-    do {                                                           \
-        (b)[0] = (byte)((u) >> 24);                                \
-        (b)[1] = (byte)((u) >> 16);                                \
-        (b)[2] = (byte)((u) >>  8);                                \
-        (b)[3] = (byte)( u       );                                \
-    } while(0)*/
 
 /* declare extended boolean type */
 #ifndef SERENDIPITY_BOOL
@@ -79,4 +43,4 @@ if(!(expr)) {                                                   \
 #endif
 
 
-#endif
+#endif // ENCRYPT_PRE_INIT
