@@ -53,8 +53,10 @@ static const uint32_t T[64] = {
     (a = b + ( CYCLE_SHL_SIZE_NBIT(a + I(b, c, d) + mj + ti, s, uint32_t)))
 
 /* md5 function */
-uint32_t *md5_padding(const byte *data, size_t data_bit_size, size_t *block_size);
+uint32_t *md5_padding(const byte *data, size_t data_bit_count, size_t *block_size);
 
-status md5(const byte *data, size_t data_bit_size, byte *digest);
+
+
+status md5(const byte *data, size_t data_bit_size, char *digest);
 
 #endif //SERENDIPITY_MD5_H
