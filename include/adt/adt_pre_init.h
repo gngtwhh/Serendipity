@@ -6,8 +6,8 @@
  * @date 2024
  */
 
-#ifndef _ADT_PRE_INIT_H_
-#define _ADT_PRE_INIT_H_
+#ifndef ADT_PRE_INIT_H
+#define ADT_PRE_INIT_H
 
 #include <stdio.h>
 
@@ -34,4 +34,4 @@ if(!(expr)) {                                                   \
 }
 #endif
 
-#endif
+#endif // ADT_PRE_INIT_H

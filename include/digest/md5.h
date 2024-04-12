@@ -4,15 +4,15 @@
  * @author: WAHAHA
  * @Date: 2024/4/7 9:36
  * @LastEditTime: 2024/4/7 9:36
- * @FilePath: Serendipity/include/encode/md5.h
- * @category: encode-algorithm
+ * @FilePath: Serendipity/include/digest/md5.h
+ * @category: digest-algorithm
  */
 
 #ifndef SERENDIPITY_MD5_H
 #define SERENDIPITY_MD5_H
 
 /* pre-initialization of encode */
-#include <encode/encode_pre_init.h>
+#include "digest/digest_pre_init.h"
 
 /* basic md5 data size */
 #define MD5_DIGEST_SIZE 16

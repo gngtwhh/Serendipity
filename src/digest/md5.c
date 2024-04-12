@@ -3,14 +3,14 @@
  * @description: This is a source file that contains the implementation of MD5 algorithm.
  * @author: WAHAHA
  * @Date: 2024/4/7 10:30
- * @FilePath: Serendipity/src/encode/md5.c
- * @category: encode-algorithm
+ * @FilePath: Serendipity/src/digest/md5.c
+ * @category: digest-algorithm
  */
 
 #include <stdlib.h>
-#include <encode/md5.h>
-#include <encode/hex.h>
-#include <misc/endian.h>
+#include "digest/md5.h"
+#include "encode/hex.h"
+#include "misc/endian.h"
 
 #define set_mask_u32(i, j) (((1u << ((j) - (i) + 1)) - 1) << (i))
 

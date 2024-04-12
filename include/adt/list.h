@@ -6,8 +6,8 @@
  * @date 2024
  */
 
-#ifndef _LIST_H_
-#define _LIST_H_
+#ifndef ADT_LIST_H
+#define ADT_LIST_H
 
  /* pre-initialization of ADT */
 #include "adt/adt_pre_init.h"
@@ -54,4 +54,4 @@ status list_push_back(list_t *list, void *data);
 // void *list_back(list_t *list);
 void *list_get(list_t *list, size_t index);
 
-#endif
+#endif // ADT_LIST_H

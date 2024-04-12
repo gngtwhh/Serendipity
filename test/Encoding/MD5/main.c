@@ -1,4 +1,4 @@
-#include "encode/md5.h"
+#include "digest/md5.h"
 
 #include <stdio.h>
 #include <string.h>

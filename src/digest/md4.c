@@ -8,9 +8,9 @@
  */
 
 #include <stdlib.h>
-#include <encode/md4.h>
-#include <encode/hex.h>
-#include <misc/endian.h>
+#include "digest/md4.h"
+#include "encode/hex.h"
+#include "misc/endian.h"
 
 #define set_mask_u32(i, j) (((1u << ((j) - (i) + 1)) - 1) << (i))
 

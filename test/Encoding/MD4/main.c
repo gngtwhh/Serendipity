@@ -1,4 +1,4 @@
-#include "encode/md4.h"
+#include "digest/md4.h"
 
 #include <stdio.h>
 #include <string.h>

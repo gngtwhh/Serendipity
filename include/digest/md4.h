@@ -4,15 +4,15 @@
  * @author: WAHAHA
  * @Date: 2024/4/11 14:52
  * @LastEditTime: 2024/4/11 14:52
- * @FilePath: Serendipity/include/encode/md4.h
- * @category: encode-algorithm
+ * @FilePath: Serendipity/include/digest/md4.h
+ * @category: digest-algorithm
  */
 
 #ifndef SERENDIPITY_MD4_H
 #define SERENDIPITY_MD4_H
 
 /* pre-initialization of encode */
-#include <encode/encode_pre_init.h>
+#include "digest/digest_pre_init.h"
 
 /* basic md4 data size */
 #define MD4_DIGEST_SIZE 16

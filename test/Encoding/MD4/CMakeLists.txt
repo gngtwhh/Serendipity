@@ -12,6 +12,6 @@ set(
 add_executable(
     md4_test
     main.c
-    ${source_file_path}/encode/md4.c
+    ${source_file_path}/digest/md4.c
     ${source_file_path}/encode/hex.c
 )

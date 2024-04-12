@@ -1,18 +1,11 @@
 /**
- * @file: File name
- * @description: Briefly describe the file
+ * @file: encode_pre_init.h
+ * @description: This is a header file that contains the declaration of pre-initialization of encode.
  * @author: WAHAHA
  * @Date: 2024-02-28 11:06:35
  * @LastEditTime: 2024-03-04 15:22:36
  * @FilePath: \Serendipity\include\encode\encode_pre_init.h
- * @category: File category
- */
-/**
- * @file encode_pre_init.h
- * @brief This is a header file that contains the declaration of pre-initialization of encode algorithm.
- * @author WAHAHA
- * @category encode-algorithm
- * @date 2024
+ * @category: encode-algorithm
  */
 
 #ifndef ENCODE_PRE_INIT_H
@@ -46,10 +39,5 @@ if(!(expr)) {                                                   \
     return code;                                                \
 }
 #endif
-
-// #ifndef container_of
-// #define container_of(ptr, type, member) \
-//     ((type *)((char *)(ptr) - (unsigned long)(&((type *)0)->member)))
-// #endif
 
 #endif // ENCODE_PRE_INIT_H
