@@ -12,7 +12,7 @@
 #include "encode/hex.h"
 #include "misc/endian.h"
 
-#define set_mask_u32(i, j) (((1u << ((j) - (i) + 1)) - 1) << (i))
+#define set_mask(i, j) (((1u << ((j) - (i) + 1)) - 1) << (i))
 
 /**
  * @Funticon name: md5_padding
@@ -25,7 +25,7 @@
  * @param {size_t *} block_size: The block count after padding.
  * @return {uint32_t *}: The data after padding.
  */
-uint32_t *md5_padding(const byte *data, size_t data_bit_count, size_t *block_count) {
+static uint32_t *md5_padding(const byte *data, size_t data_bit_count, size_t *block_count) {
     /* calculate the number of bytes */
     size_t data_byte_size = (data_bit_count + 7) / 8;
     /* calculate the number of the data after padding in blocks */
@@ -41,7 +41,7 @@ uint32_t *md5_padding(const byte *data, size_t data_bit_count, size_t *block_cou
     }
     /* clear the extra bits of the last byte */
     if (data_bit_count % 8 != 0) {
-        data_padding[data_byte_size >> 2] &= ~set_mask_u32(
+        data_padding[data_byte_size >> 2] &= ~set_mask(
                 (data_byte_size % 4 - 1) * 8,
                 (data_byte_size % 4) * 8 - (data_bit_count % 8) - 1);
     }

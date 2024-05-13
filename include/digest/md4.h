@@ -11,7 +11,7 @@
 #ifndef SERENDIPITY_MD4_H
 #define SERENDIPITY_MD4_H
 
-/* pre-initialization of encode */
+/* pre-initialization of digest */
 #include "digest/digest_pre_init.h"
 
 /* basic md4 data size */
@@ -30,7 +30,7 @@
     (a = ( CYCLE_SHL_SIZE_NBIT(a + H(b, c, d) + mj + 0x6ED9EBA1, s, uint32_t)))
 
 /* md4 function */
-uint32_t *md4_padding(const byte *data, size_t data_bit_count, size_t *block_size);
+static uint32_t *md4_padding(const byte *data, size_t data_bit_count, size_t *block_size);
 
 status md4(const byte *data, size_t data_bit_size, char *digest);
 

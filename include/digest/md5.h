@@ -11,14 +11,15 @@
 #ifndef SERENDIPITY_MD5_H
 #define SERENDIPITY_MD5_H
 
-/* pre-initialization of encode */
+/* pre-initialization of digest */
 #include "digest/digest_pre_init.h"
 
 /* basic md5 data size */
 #define MD5_DIGEST_SIZE 16
 
 /* md5 data */
-static const uint32_t T[64] = {
+/* // The table that is used to calculate the md5
+ * static const uint32_t T[64] = {
         0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
         0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
         0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
@@ -35,7 +36,7 @@ static const uint32_t T[64] = {
         0x655b59c3, 0x8f0ccc92, 0xffeff47d, 0x85845dd1,
         0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
         0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
-};
+};*/
 
 /* md5 auxiliary functions */
 #define F(x, y, z) (((x) & (y)) | ((~x) & (z)))
@@ -53,9 +54,7 @@ static const uint32_t T[64] = {
     (a = b + ( CYCLE_SHL_SIZE_NBIT(a + I(b, c, d) + mj + ti, s, uint32_t)))
 
 /* md5 function */
-uint32_t *md5_padding(const byte *data, size_t data_bit_count, size_t *block_size);
-
-
+static uint32_t *md5_padding(const byte *data, size_t data_bit_count, size_t *block_size);
 
 status md5(const byte *data, size_t data_bit_size, char *digest);
 
