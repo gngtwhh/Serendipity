@@ -164,4 +164,24 @@ status morse_decode(const char *str, char *buffer, size_t buffer_size) {
 
 
 // Encode ASCII to Morse code
-status morse_encode(const char *str, char *buffer, size_t buffer_size);
+status morse_encode(const char *str, char *buffer, size_t buffer_size) {
+    ASSERT(buffer_size > 0, error);
+    ASSERT(str != NULL && buffer != NULL, error);
+    if (ctx == NULL) {
+        init_morse_ctx();
+    }
+    size_t idx = 0;
+    buffer[0] = '\0';
+    for (size_t i = 0; i < strlen(str); i++) {
+        if (ctx->morse_table_ascii[str[i]] != NULL) {
+            idx += strlen(ctx->morse_table_ascii[str[i]]);
+            if (idx++ >= buffer_size - 1) {
+                return error;
+            }
+            strcat(buffer, ctx->morse_table_ascii[str[i]]);
+            strcat(buffer, " ");
+        }
+    }
+    buffer[idx - 1] = '\0'; // Remove the last space
+    return true;
+}
