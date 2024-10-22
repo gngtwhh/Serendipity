@@ -24,3 +24,6 @@ add_subdirectory(test/digest/SHA2)
 add_subdirectory(test/Encrypt/tea)
 add_subdirectory(test/Encrypt/rc4)
 add_subdirectory(test/Encrypt/SM4)
+
+# Misc
+add_subdirectory(test/Misc/bf_runner)
