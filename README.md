@@ -36,40 +36,40 @@ CTF比赛中,经常需要编写脚本代码来处理题目数据,生成flag,使�
 
 # 功能支持列表
 - 数据结构ADT
-  [x] dynamic_array
-  [x] list
-  [x] queue
-  [ ] stack
+  - [x] dynamic_array
+  - [x] list
+  - [x] queue
+  - [ ] stack
 - 摘要算法Digest
-  [ ] MD2
-  [ ] MD3
-  [x] MD4
-  [x] MD5
-  [x] SHA2-224
-  [x] SHA2-256
-  [x] SHA2-384
-  [x] SHA2-512
-  [x] SHA2-512/224
-  [x] SHA2-512/256
-  [ ] CRC32
-  [ ] CRC64
+  - [ ] MD2
+  - [ ] MD3
+  - [x] MD4
+  - [x] MD5
+  - [x] SHA2-224
+  - [x] SHA2-256
+  - [x] SHA2-384
+  - [x] SHA2-512
+  - [x] SHA2-512/224
+  - [x] SHA2-512/256
+  - [ ] CRC32
+  - [ ] CRC64
 - 编码转换Encode
-  [x] Base64(支持编码表的自定义)
-  [ ] Base32(支持编码表的自定义)
-  [x] HEX_string to Byte_array
-  [x] Morse Code
+  - [x] Base64(支持编码表的自定义)
+  - [ ] Base32(支持编码表的自定义)
+  - [x] HEX_string to Byte_array
+  - [x] Morse Code
 - 加密算法Encrypt
-  [x] RC4(支持SBOX盒大小的自定义)
-  [x] 国密 SM4
-  [x] TEA,XTEA,XXTEA(支持各个关键key值的自定义)
-  [ ] AES
-  [ ] DES
-  [ ] Blowfish
+  - [x] RC4(支持SBOX盒大小的自定义)
+  - [x] 国密 SM4
+  - [x] TEA,XTEA,XXTEA(支持各个关键key值的自定义)
+  - [ ] AES
+  - [ ] DES
+  - [ ] Blowfish
 - 其他算法Other
-  [x] Brain f**k 解释器
+  - [x] Brain f**k 解释器
 - 其他附加工具
-  [x] 大小端序转换宏
-  [x] 二进制位操作宏
+  - [x] 大小端序转换宏
+  - [x] 二进制位操作宏
 
 # 如何贡献
 - 主分支:main, 用于发布稳定版本(待发布)
