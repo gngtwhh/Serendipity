@@ -4,7 +4,7 @@
  * @author: WAHAHA
  * @Date: 2024/4/16 14:50
  * @FilePath: Serendipity/src/digest/sha2.c
- * @category:
+ * @category: digest-algorithm
  */
 
 #include <digest/sha2.h>

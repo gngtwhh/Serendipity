@@ -1,15 +1,15 @@
 /**
- * @file: encode_pre_init.h
- * @description: This is a header file that contains the declaration of pre-initialization of encode.
+ * @file: digest_pre_init.h
+ * @description: This is a header file that contains the declaration of pre-initialization of digest.
  * @author: WAHAHA
  * @Date: 2024-02-28 11:06:35
  * @LastEditTime: 2024-03-04 15:22:36
- * @FilePath: \Serendipity\include\encode\encode_pre_init.h
+ * @FilePath: \Serendipity\include\digest\digest_pre_init.h
  * @category: digest-algorithm
  */
 
-#ifndef ENCODE_PRE_INIT_H
-#define ENCODE_PRE_INIT_H
+#ifndef DIGEST_PRE_INIT_H
+#define DIGEST_PRE_INIT_H
 
 #include <stdio.h>
 #include <stdint.h>
@@ -40,4 +40,4 @@ if(!(expr)) {                                                   \
 }
 #endif
 
-#endif // ENCODE_PRE_INIT_H
+#endif // DIGEST_PRE_INIT_H
