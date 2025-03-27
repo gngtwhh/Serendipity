@@ -3,10 +3,16 @@
 #include <stdio.h>
 #include <string.h>
 
+void print_hex(const byte *data,const int len) {
+    for (int i = 0; i < len; ++i) {
+        printf("%02x", data[i]);
+    }
+}
+
 void SHA256_test() {
-    byte data0[] = "abc";
-    byte data1[] = "abcdbcdecdbaefabcdbcdecdbaefabcdbcdecdbaefabcdbcdecdbaef";
-    byte data2[] = "abcdbcdecdbaefabcdbcdecdbaefabcdbcdecdbaefabcdbcdecdbaefabcdbcdecdbaefabcdbcdecdbaefabcdbcdecdbaefabcdbcdecdbaef";
+    byte *data0 = "abc";
+    byte *data1 = "abcdbcdecdbaefabcdbcdecdbaefabcdbcdecdbaefabcdbcdecdbaef";
+    byte *data2 = "abcdbcdecdbaefabcdbcdecdbaefabcdbcdecdbaefabcdbcdecdbaefabcdbcdecdbaefabcdbcdecdbaefabcdbcdecdbaefabcdbcdecdbaef";
 
     byte expected0[] = {
             0xba, 0x78, 0x16, 0xbf, 0x8f, 0x01, 0xcf, 0xea, 0x41, 0x41, 0x40, 0xde, 0x5d, 0xae, 0x22, 0x23, 0xb0, 0x03,
@@ -26,34 +32,37 @@ void SHA256_test() {
 
     printf("=======================SHA256 test=======================\n");
 
-    printf("\"%s\":\n", data0);
     sha2_init(&ctx, SHA256);
     sha2_update(&ctx, data0, strlen((char *) data0));
     sha2_final(&ctx, hash);
+    printf("Test 0: \"%s\" -> ", (char*)data0);
+    print_hex(hash, SHA256_DIGEST_SIZE);
     if (memcmp(hash, expected0, SHA256_DIGEST_SIZE) != 0) {
-        printf("Test 0 failed\n\n");
+        printf("\nFAILED\n\n");
     } else {
-        printf("Test 0 passed\n\n");
+        printf("\nPASSWD\n\n");
     }
 
-    printf("\"%s\":\n", data1);
     sha2_init(&ctx, SHA256);
     sha2_update(&ctx, data1, strlen((char *) data1));
     sha2_final(&ctx, hash);
+    printf("Test 1: \"%s\" -> ", (char*)data1);
+    print_hex(hash, SHA256_DIGEST_SIZE);
     if (memcmp(hash, expected1, SHA256_DIGEST_SIZE) != 0) {
-        printf("Test 1 failed\n\n");
+        printf("\nFAILED\n\n");
     } else {
-        printf("Test 1 passed\n\n");
+        printf("\nPASSWD\n\n");
     }
 
-    printf("\"%s\":\n", data2);
     sha2_init(&ctx, SHA256);
     sha2_update(&ctx, data2, strlen((char *) data2));
     sha2_final(&ctx, hash);
+    printf("Test 2: \"%s\" -> ", (char*)data2);
+    print_hex(hash, SHA256_DIGEST_SIZE);
     if (memcmp(hash, expected2, SHA256_DIGEST_SIZE) != 0) {
-        printf("Test 2 failed\n\n");
+        printf("\nFAILED\n\n");
     } else {
-        printf("Test 2 passed\n\n");
+        printf("\nPASSWD\n\n");
     }
 }
 
@@ -80,34 +89,37 @@ void SHA224_test() {
 
     printf("=======================SHA224 test=======================\n");
 
-    printf("\"%s\":\n", data0);
     sha2_init(&ctx, SHA224);
     sha2_update(&ctx, data0, strlen((char *) data0));
     sha2_final(&ctx, hash);
+    printf("Test 0: \"%s\" -> ", (char*)data0);
+    print_hex(hash, SHA224_DIGEST_SIZE);
     if (memcmp(hash, expected0, SHA224_DIGEST_SIZE) != 0) {
-        printf("Test 0 failed\n\n");
+        printf("\nFAILED\n\n");
     } else {
-        printf("Test 0 passed\n\n");
+        printf("\nPASSWD\n\n");
     }
 
-    printf("\"%s\":\n", data1);
     sha2_init(&ctx, SHA224);
     sha2_update(&ctx, data1, strlen((char *) data1));
     sha2_final(&ctx, hash);
+    printf("Test 1: \"%s\" -> ", (char*)data1);
+    print_hex(hash, SHA224_DIGEST_SIZE);
     if (memcmp(hash, expected1, SHA224_DIGEST_SIZE) != 0) {
-        printf("Test 1 failed\n\n");
+        printf("\nFAILED\n\n");
     } else {
-        printf("Test 1 passed\n\n");
+        printf("\nPASSWD\n\n");
     }
 
-    printf("\"%s\":\n", data2);
     sha2_init(&ctx, SHA224);
     sha2_update(&ctx, data2, strlen((char *) data2));
     sha2_final(&ctx, hash);
+    printf("Test 2: \"%s\" -> ", (char*)data2);
+    print_hex(hash, SHA224_DIGEST_SIZE);
     if (memcmp(hash, expected2, SHA224_DIGEST_SIZE) != 0) {
-        printf("Test 2 failed\n\n");
+        printf("\nFAILED\n\n");
     } else {
-        printf("Test 2 passed\n\n");
+        printf("\nPASSWD\n\n");
     }
 }
 
@@ -140,34 +152,37 @@ void SHA512_test() {
 
     printf("=======================SHA512 test=======================\n");
 
-    printf("\"%s\":\n", data0);
     sha2_init(&ctx, SHA512);
     sha2_update(&ctx, data0, strlen((char *) data0));
     sha2_final(&ctx, hash);
+    printf("Test 0: \"%s\" -> ", (char*)data0);
+    print_hex(hash, SHA512_DIGEST_SIZE);
     if (memcmp(hash, expected0, SHA512_DIGEST_SIZE) != 0) {
-        printf("Test 0 failed\n\n");
+        printf("\nFAILED\n\n");
     } else {
-        printf("Test 0 passed\n\n");
+        printf("\nPASSWD\n\n");
     }
 
-    printf("\"%s\":\n", data1);
     sha2_init(&ctx, SHA512);
     sha2_update(&ctx, data1, strlen((char *) data1));
     sha2_final(&ctx, hash);
+    printf("Test 1: \"%s\" -> ", (char*)data1);
+    print_hex(hash, SHA512_DIGEST_SIZE);
     if (memcmp(hash, expected1, SHA512_DIGEST_SIZE) != 0) {
-        printf("Test 1 failed\n\n");
+        printf("\nFAILED\n\n");
     } else {
-        printf("Test 1 passed\n\n");
+        printf("\nPASSWD\n\n");
     }
 
-    printf("\"%s\":\n", data2);
     sha2_init(&ctx, SHA512);
     sha2_update(&ctx, data2, strlen((char *) data2));
     sha2_final(&ctx, hash);
+    printf("Test 2: \"%s\" -> ", (char*)data2);
+    print_hex(hash, SHA512_DIGEST_SIZE);
     if (memcmp(hash, expected2, SHA512_DIGEST_SIZE) != 0) {
-        printf("Test 2 failed\n\n");
+        printf("\nFAILED\n\n");
     } else {
-        printf("Test 2 passed\n\n");
+        printf("\nPASSWD\n\n");
     }
 }
 
@@ -197,34 +212,37 @@ void SHA384_test() {
 
     printf("=======================SHA384 test=======================\n");
 
-    printf("\"%s\":\n", data0);
     sha2_init(&ctx, SHA384);
     sha2_update(&ctx, data0, strlen((char *) data0));
     sha2_final(&ctx, hash);
+    printf("Test 0: \"%s\" -> ", (char*)data0);
+    print_hex(hash, SHA384_DIGEST_SIZE);
     if (memcmp(hash, expected0, SHA384_DIGEST_SIZE) != 0) {
-        printf("Test 0 failed\n\n");
+        printf("\nFAILED\n\n");
     } else {
-        printf("Test 0 passed\n\n");
+        printf("\nPASSWD\n\n");
     }
 
-    printf("\"%s\":\n", data1);
     sha2_init(&ctx, SHA384);
     sha2_update(&ctx, data1, strlen((char *) data1));
     sha2_final(&ctx, hash);
+    printf("Test 1: \"%s\" -> ", (char*)data1);
+    print_hex(hash, SHA384_DIGEST_SIZE);
     if (memcmp(hash, expected1, SHA384_DIGEST_SIZE) != 0) {
-        printf("Test 1 failed\n\n");
+        printf("\nFAILED\n\n");
     } else {
-        printf("Test 1 passed\n\n");
+        printf("\nPASSWD\n\n");
     }
 
-    printf("\"%s\":\n", data2);
     sha2_init(&ctx, SHA384);
     sha2_update(&ctx, data2, strlen((char *) data2));
     sha2_final(&ctx, hash);
+    printf("Test 2: \"%s\" -> ", (char*)data2);
+    print_hex(hash, SHA384_DIGEST_SIZE);
     if (memcmp(hash, expected2, SHA384_DIGEST_SIZE) != 0) {
-        printf("Test 2 failed\n\n");
+        printf("\nFAILED\n\n");
     } else {
-        printf("Test 2 passed\n\n");
+        printf("\nPASSWD\n\n");
     }
 }
 
@@ -251,34 +269,37 @@ void SHA512_224_test() {
 
     printf("=======================SHA512/224 test=======================\n");
 
-    printf("\"%s\":\n", data0);
     sha2_init(&ctx, SHA512_224);
     sha2_update(&ctx, data0, strlen((char *) data0));
     sha2_final(&ctx, hash);
+    printf("Test 0: \"%s\" -> ", (char*)data0);
+    print_hex(hash, SHA512_224_DIGEST_SIZE);
     if (memcmp(hash, expected0, SHA512_224_DIGEST_SIZE) != 0) {
-        printf("Test 0 failed\n\n");
+        printf("\nFAILED\n\n");
     } else {
-        printf("Test 0 passed\n\n");
+        printf("\nPASSWD\n\n");
     }
 
-    printf("\"%s\":\n", data1);
     sha2_init(&ctx, SHA512_224);
     sha2_update(&ctx, data1, strlen((char *) data1));
     sha2_final(&ctx, hash);
+    printf("Test 1: \"%s\" -> ", (char*)data1);
+    print_hex(hash, SHA512_224_DIGEST_SIZE);
     if (memcmp(hash, expected1, SHA512_224_DIGEST_SIZE) != 0) {
-        printf("Test 1 failed\n\n");
+        printf("\nFAILED\n\n");
     } else {
-        printf("Test 1 passed\n\n");
+        printf("\nPASSWD\n\n");
     }
 
-    printf("\"%s\":\n", data2);
     sha2_init(&ctx, SHA512_224);
     sha2_update(&ctx, data2, strlen((char *) data2));
     sha2_final(&ctx, hash);
+    printf("Test 2: \"%s\" -> ", (char*)data2);
+    print_hex(hash, SHA512_224_DIGEST_SIZE);
     if (memcmp(hash, expected2, SHA512_224_DIGEST_SIZE) != 0) {
-        printf("Test 2 failed\n\n");
+        printf("\nFAILED\n\n");
     } else {
-        printf("Test 2 passed\n\n");
+        printf("\nPASSWD\n\n");
     }
 }
 
@@ -305,34 +326,37 @@ void SHA512_256_test() {
 
     printf("=======================SHA512/256 test=======================\n");
 
-    printf("\"%s\":\n", data0);
     sha2_init(&ctx, SHA512_256);
     sha2_update(&ctx, data0, strlen((char *) data0));
     sha2_final(&ctx, hash);
+    printf("Test 0: \"%s\" -> ", (char*)data0);
+    print_hex(hash, SHA512_256_DIGEST_SIZE);
     if (memcmp(hash, expected0, SHA512_256_DIGEST_SIZE) != 0) {
-        printf("Test 0 failed\n\n");
+        printf("\nFAILED\n\n");
     } else {
-        printf("Test 0 passed\n\n");
+        printf("\nPASSWD\n\n");
     }
 
-    printf("\"%s\":\n", data1);
     sha2_init(&ctx, SHA512_256);
     sha2_update(&ctx, data1, strlen((char *) data1));
     sha2_final(&ctx, hash);
+    printf("Test 1: \"%s\" -> ", (char*)data1);
+    print_hex(hash, SHA512_256_DIGEST_SIZE);
     if (memcmp(hash, expected1, SHA512_256_DIGEST_SIZE) != 0) {
-        printf("Test 1 failed\n\n");
+        printf("\nFAILED\n\n");
     } else {
-        printf("Test 1 passed\n\n");
+        printf("\nPASSWD\n\n");
     }
 
-    printf("\"%s\":\n", data2);
     sha2_init(&ctx, SHA512_256);
     sha2_update(&ctx, data2, strlen((char *) data2));
     sha2_final(&ctx, hash);
+    printf("Test 2: \"%s\" -> ", (char*)data2);
+    print_hex(hash, SHA512_256_DIGEST_SIZE);
     if (memcmp(hash, expected2, SHA512_256_DIGEST_SIZE) != 0) {
-        printf("Test 2 failed\n\n");
+        printf("\nFAILED\n\n");
     } else {
-        printf("Test 2 passed\n\n");
+        printf("\nPASSWD\n\n");
     }
 }
 
@@ -343,6 +367,5 @@ int main() {
     SHA384_test();
     SHA512_224_test();
     SHA512_256_test();
-
     return 0;
 }
